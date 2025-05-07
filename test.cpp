@@ -409,7 +409,8 @@ ofstream outFile("test.obj"); // Create and open a file named output.txt
         fcount = 0;
         outFile << endl << "# Faces - Triangles" << endl;
         for (struct_FaceArray face_loop : FaceArray_current) {
-          
+          // 1,4,2
+          // 4,3,2
         }
         }
         else {
