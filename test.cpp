@@ -20,6 +20,7 @@ double pi = 3.14159265358979311599796346854;
 int Tessalation_Level = 1;
 const double radius = 20.0;
 const double height = radius;
+bool triOrQuad = 0; // if 0 the output will be quads, if 1 the output will be triangles
 
 // Defines the latitude, longitude, and height of each vertex.
 struct struct_VertexArray {
@@ -404,10 +405,20 @@ ofstream outFile("test.obj"); // Create and open a file named output.txt
 
         // add faces to output file
         int fcount = 0;
-        outFile << endl << "# Faces" << endl;
+        if (triOrQuad = 1 ) {
+        fcount = 0;
+        outFile << endl << "# Faces - Triangles" << endl;
+        for (struct_FaceArray face_loop : FaceArray_current) {
+          
+        }
+        }
+        else {
+        fcount = 0;
+        outFile << endl << "# Faces - Quads" << endl;
         for (struct_FaceArray face_loop : FaceArray_current) {
           outFile << "f " << face_loop.v1+1 << " " << face_loop.v4+1 << " " << face_loop.v3+1 << " " << face_loop.v2+1 << endl;
           fcount++; };
+        }
       
 
         outFile.close(); // Always close the file when done
