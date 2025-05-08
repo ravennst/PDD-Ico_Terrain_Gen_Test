@@ -20,7 +20,7 @@ double pi = 3.14159265358979311599796346854;
 int Tessalation_Level = 1;
 const double radius = 20.0;
 const double height = radius;
-bool triOrQuad = false; // if false the output will be quads, if true the output will be triangles
+bool triOrQuad = true; // if false the output will be quads, if true the output will be triangles
 
 // Defines the latitude, longitude, and height of each vertex.
 struct struct_VertexArray {
