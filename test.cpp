@@ -405,7 +405,7 @@ ofstream outFile("test.obj"); // Create and open a file named output.txt
 
         // add faces to output file
         int fcount = 0;
-        if (triOrQuad = true ) {
+        if (triOrQuad == true ) {
         fcount = 0;
         outFile << endl << "# Faces - Triangles" << endl;
         for (struct_FaceArray face_loop : FaceArray_current) {
