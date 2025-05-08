@@ -3,8 +3,7 @@ Next steps:
 I've added the functions to find the midpoint between two points as Lat/Long.
 Stuff to do:
 -@ Ensure rounding errors don't happen at vertex mapping conversion.
--@ ability to define Tessalation level.
--@ Output final tessalation to Wavefront (.OBJ) 3D model file.
+-@ show dynamic progress at terminal.
 -@ Add height generation algorithm
 */
 
@@ -17,7 +16,7 @@ Stuff to do:
 using namespace std;
 
 double pi = 3.14159265358979311599796346854;
-int Tessalation_Level = 1;
+int Tessalation_Level = 5;
 const double radius = 20.0;
 const double height = radius;
 bool triOrQuad = true; // if false the output will be quads, if true the output will be triangles
@@ -193,7 +192,7 @@ int main() {
   vector<struct_VertexArray> VertexArray = generate_initial_icosahedron_vertices(); // Generate initial vertices
   vector<struct_FaceArray> FaceArray_current = associate_initial_faces(); // Associate initial faces
   
-  
+  cout << "Is Triangles: " << triOrQuad << endl << endl;
   /*/ **************************    initialization testing
   int vcount = 1;
   int fcount = 1;
@@ -210,9 +209,15 @@ int main() {
   cout << "Lat_1:0.0, Long_1:1.0, Lat_2:1.0, Long_2:2.0" << " : " << midpoint_Lat(0.0, 1.0, 1.0, 2.0) << endl;
   cout << "Lat_1:0.0, Long_1:1.0, Lat_2:1.0, Long_2:2.0" << " : " << midpoint_Long(0.0, 1.0, 1.0, 2.0) << endl;
   // End of initialization testing */ 
+ 
+cout << "Initialization of icosahedron complete." << endl;
+cout << VertexArray.size() << " vertices calculated." << endl;
+cout << FaceArray_current.size() << " faces created." << endl << endl;
 
   // ******************** Start of Tessalation *********************
   
+  for ( int Tessalation_Level_current = Tessalation_Level; Tessalation_Level_current > 0; Tessalation_Level_current--)
+  {
   // Step 1: Determine number of faces to subdivide and apply that to a count number
   int fcountMax = FaceArray_current.size();
   vector <struct_EdgeArray> EdgeArray;
@@ -299,11 +304,14 @@ FaceArray_new.push_back ({v_I9, v_I6, v_I3, v_I7}); // Face 3
 FaceArray_new.push_back ({v_I8, v_I9, v_I7, v_I4}); // Face 4
 
 }
-
+ cout << "Tessalation " << Tessalation_Level - Tessalation_Level_current + 1 << " of " << Tessalation_Level << " complete." << endl;
 FaceArray_current.clear();
 FaceArray_current = FaceArray_new;
+cout << VertexArray.size() << " vertices calculated." << endl;
+cout << FaceArray_current.size() << " faces created." << endl << endl; // number will always represent quads as triangles are calculated at output stage by dividing the quad into two triangles then.
 FaceArray_new.clear();
 EdgeArray.clear();
+  }
   
 /*
 // test vertex output
