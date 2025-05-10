@@ -12,13 +12,15 @@ Stuff to do:
 #include <math.h>
 #include <algorithm>
 #include <fstream>
+#include <iomanip>
+#include <sstream>
 
 using namespace std;
 
-double pi = 3.14159265358979311599796346854;
-int Tessalation_Level = 5;
+const double pi = 3.141592653589793;
+int Tessalation_Level = 4;
 const double radius = 20.0;
-const double height = radius;
+double height = radius;
 bool triOrQuad = true; // if false the output will be quads, if true the output will be triangles
 
 // Defines the latitude, longitude, and height of each vertex.
@@ -120,8 +122,9 @@ vector<struct_FaceArray> associate_initial_faces() { // This is a function.
 // Function to find the midpoint between two points : output is vertex<double> (Lat, Long)
 // input and output in radians
 vector<double> midpointCalc(double Lat_1, double Long_1, double Lat_2, double Long_2) { // Function
-  double Bx = cos(Lat_2)*cos(Long_2-Long_1);
-  double By = cos(Lat_2)*sin(Long_2-Long_1);
+  double dLong = Long_2 - Long_1;
+  double Bx = cos(Lat_2)*cos(dLong);
+  double By = cos(Lat_2)*sin(dLong);
   // vector<double> midpointoutput = { atan2(sin(Lat_1)+sin(Lat_2), pow(sqrt(cos(Lat_1)+Bx),2)+pow(By,2)), atan2(By,cos(Lat_1+Bx)) };
   //return midpointoutput;   
   double z = sin(Lat_1) + sin(Lat_2);
@@ -148,6 +151,8 @@ vector<double> midpointCalc(double Lat_1, double Long_1, double Lat_2, double Lo
   {
     Long_mid = 0.0;
   }
+  if (Long_mid > pi) Long_mid -= 2 * pi;
+  if (Long_mid < -pi) Long_mid += 2 * pi;
 
   return {Lat_mid, Long_mid};
 }
@@ -220,6 +225,7 @@ cout << FaceArray_current.size() << " faces created." << endl << endl;
   {
   // Step 1: Determine number of faces to subdivide and apply that to a count number
   int fcountMax = FaceArray_current.size();
+  float fcountPercent = 0.0;
   vector <struct_EdgeArray> EdgeArray;
   vector <struct_FaceArray> FaceArray_new;
     
@@ -302,7 +308,9 @@ FaceArray_new.push_back ({v_I1, v_I5, v_I9, v_I8}); // Face 1
 FaceArray_new.push_back ({v_I5, v_I2, v_I6, v_I9}); // Face 2
 FaceArray_new.push_back ({v_I9, v_I6, v_I3, v_I7}); // Face 3
 FaceArray_new.push_back ({v_I8, v_I9, v_I7, v_I4}); // Face 4
-
+// if (fcount > 0 && fcount % 1000 == 0) { // used to check tessalation completion.
+// fcountPercent = (static_cast<float>(fcount) / fcountMax) * 100.0f;
+// cout << endl << "Tessalation Level " << Tessalation_Level_current << ": " << fcountPercent << "% complete." << endl; }
 }
  cout << "Tessalation " << Tessalation_Level - Tessalation_Level_current + 1 << " of " << Tessalation_Level << " complete." << endl;
 FaceArray_current.clear();
@@ -396,10 +404,13 @@ Additional Notes:
 - Lines can be continued with a backslash `\` at the end.
 - vertices are indexed by the order they appear, starting at 1
 */
-
-ofstream outFile("test.obj"); // Create and open a file named output.txt
+ostringstream OFN;
+OFN << "T" << Tessalation_Level << "_Tri" << triOrQuad << "_Output.OBJ";
+string OutputFileName = OFN.str();
+ofstream outFile(OutputFileName); // Create and open a file named output.txt
 
     if (outFile.is_open()) {
+        outFile << std::fixed << std::setprecision(12);
         outFile << "# icosahedron test\n";
         outFile << "# This is your first file output.\n";
         int vcount = 0;
@@ -407,7 +418,16 @@ ofstream outFile("test.obj"); // Create and open a file named output.txt
 
         // add vertices to output file.
         for (struct_VertexArray vertex_loop: VertexArray) {
-          outFile << "v " << vertex_loop.v_Height * cos(vertex_loop.v_Lat) * cos(vertex_loop.v_Long) << " " << vertex_loop.v_Height * cos(vertex_loop.v_Lat) * sin(vertex_loop.v_Long) << " " << vertex_loop.v_Height * sin(vertex_loop.v_Lat) << endl;
+          double x = vertex_loop.v_Height * cos(vertex_loop.v_Lat) * cos(vertex_loop.v_Long);
+          double y = vertex_loop.v_Height * cos(vertex_loop.v_Lat) * sin(vertex_loop.v_Long);
+          double z = vertex_loop.v_Height * sin(vertex_loop.v_Lat);
+
+          // rounding error correction
+          if (abs(x) < 1e-10) x = 0.0;
+          if (abs(y) < 1e-10) y = 0.0;
+          if (abs(z) < 1e-10) z = 0.0;
+          
+          outFile << "v " << x << " " << y << " " << z << endl;
           vcount++;
         }
 
@@ -432,7 +452,7 @@ ofstream outFile("test.obj"); // Create and open a file named output.txt
       
 
         outFile.close(); // Always close the file when done
-        cout << "File written successfully.\n";
+        cout << "T" << Tessalation_Level << "_Tri" << triOrQuad << "_Output.OBJ" <<" written successfully.\n";
     } else {
         cerr << "Unable to open file for writing.\n";
     }
@@ -440,3 +460,4 @@ ofstream outFile("test.obj"); // Create and open a file named output.txt
 
   return 0;
 }
+
