@@ -14,6 +14,7 @@ Stuff to do:
 #include <fstream>
 #include <iomanip>
 #include <sstream>
+#include <planet_height.h>
 
 using namespace std;
 
