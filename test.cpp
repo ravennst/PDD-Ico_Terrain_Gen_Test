@@ -21,7 +21,7 @@ using namespace std;
 const double pi = 3.141592653589793;
 const double seed = 0.21;
 int Tessalation_Level = 0;
-const double radius = 2.0;
+const double radius = 10.0;
 const double heightMod = 1.0;
 bool triOrQuad = true; // if false the output will be quads, if true the output will be triangles
 
