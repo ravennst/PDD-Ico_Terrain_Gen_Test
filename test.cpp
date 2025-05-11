@@ -411,7 +411,7 @@ Additional Notes:
 - vertices are indexed by the order they appear, starting at 1
 */
 ostringstream OFN;
-OFN << "T" << Tessalation_Level << "_Tri" << triOrQuad << "_Output.OBJ.txt";
+OFN << "T" << Tessalation_Level << "_Tri" << triOrQuad << "_Output.OBJ";
 string OutputFileName = OFN.str();
 ofstream outFile(OutputFileName); // Create and open a file named output.txt
 
