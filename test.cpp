@@ -14,12 +14,13 @@ Stuff to do:
 #include <fstream>
 #include <iomanip>
 #include <sstream>
-#include <planet_height.h>
+#include "planet_height.h"
 
 using namespace std;
 
 const double pi = 3.141592653589793;
-int Tessalation_Level = 4;
+const double seed = 0.21;
+int Tessalation_Level = 2;
 const double radius = 20.0;
 double height = radius;
 bool triOrQuad = true; // if false the output will be quads, if true the output will be triangles
@@ -84,12 +85,14 @@ South_Long5 = (9*pi)/5;
 */
 
 // Northern vertices
-    VertexArray.push_back({ pi/2.0, 0.0, height });        // North pole      (0)
-    VertexArray.push_back({ x1, 0.0, height });            // North point 1   (1)
-    VertexArray.push_back({ x1, (2.0*pi)/5.0, height });   // North point 2   (2)
-    VertexArray.push_back({ x1, (4.0*pi)/5.0, height });   // North point 3   (3)
-    VertexArray.push_back({ x1, (6.0*pi)/5.0, height });   // North point 4   (4)
-    VertexArray.push_back({ x1, (8.0*pi)/5.0, height });   // North point 5   (5)
+    VertexArray.push_back({ pi/2.0, 0.0, planetgen::get_planet_height(pi/2, 0, seed) * 100 * height});        // North pole      (0)
+//           cout << planetgen::get_planet_height(pi/2, 0, seed) * 100 * height << endl;
+//           cout << height << endl;
+    VertexArray.push_back({ x1, 0.0, planetgen::get_planet_height(x1, 0.0, seed) * 100 * height });            // North point 1   (1)
+    VertexArray.push_back({ x1, (2.0*pi)/5.0, planetgen::get_planet_height(x1, (2.0*pi)/5.0, seed) * 100 * height });   // North point 2   (2)
+    VertexArray.push_back({ x1, (4.0*pi)/5.0, planetgen::get_planet_height(x1, (4.0*pi)/5.0, seed) * 100 * height });   // North point 3   (3)
+    VertexArray.push_back({ x1, (6.0*pi)/5.0, planetgen::get_planet_height(x1, (6.0*pi)/5.0, seed) * 100 * height });   // North point 4   (4)
+    VertexArray.push_back({ x1, (8.0*pi)/5.0, planetgen::get_planet_height(x1, (8.0*pi)/5.0, seed) * 100 * height });   // North point 5   (5)
 // Southern vertices
     VertexArray.push_back({ -x1, pi/5.0, height });        // South point 1.5 (6)
     VertexArray.push_back({ -x1, (3.0*pi)/5.0, height });  // South point 2.5 (7)
@@ -406,7 +409,7 @@ Additional Notes:
 - vertices are indexed by the order they appear, starting at 1
 */
 ostringstream OFN;
-OFN << "T" << Tessalation_Level << "_Tri" << triOrQuad << "_Output.OBJ";
+OFN << "T" << Tessalation_Level << "_Tri" << triOrQuad << "_Output.OBJ.txt";
 string OutputFileName = OFN.str();
 ofstream outFile(OutputFileName); // Create and open a file named output.txt
 
