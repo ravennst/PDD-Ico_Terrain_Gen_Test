@@ -6,6 +6,9 @@
 *.lo
 *.o
 *.obj
+*.OBJ
+*.OBJ.txt
+
 
 # Precompiled Headers
 *.gch
@@ -30,3 +33,7 @@
 *.exe
 *.out
 *.app
+
+# Files
+.vscode/tasks.json
+.vscode/launch.json
