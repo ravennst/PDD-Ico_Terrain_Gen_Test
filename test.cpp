@@ -88,18 +88,18 @@ South_Long5 = (9*pi)/5;
     VertexArray.push_back({ pi/2.0, 0.0, planetgen::get_planet_height(pi/2, 0, seed) * 100 * height});        // North pole      (0)
 //           cout << planetgen::get_planet_height(pi/2, 0, seed) * 100 * height << endl;
 //           cout << height << endl;
-    VertexArray.push_back({ x1, 0.0, planetgen::get_planet_height(x1, 0.0, seed) * 100 * height });            // North point 1   (1)
-    VertexArray.push_back({ x1, (2.0*pi)/5.0, planetgen::get_planet_height(x1, (2.0*pi)/5.0, seed) * 100 * height });   // North point 2   (2)
-    VertexArray.push_back({ x1, (4.0*pi)/5.0, planetgen::get_planet_height(x1, (4.0*pi)/5.0, seed) * 100 * height });   // North point 3   (3)
-    VertexArray.push_back({ x1, (6.0*pi)/5.0, planetgen::get_planet_height(x1, (6.0*pi)/5.0, seed) * 100 * height });   // North point 4   (4)
-    VertexArray.push_back({ x1, (8.0*pi)/5.0, planetgen::get_planet_height(x1, (8.0*pi)/5.0, seed) * 100 * height });   // North point 5   (5)
+    VertexArray.push_back({ x1, 0.0, planetgen::get_planet_height(x1, 0.0, seed) * 100.0 * height });            // North point 1   (1)
+    VertexArray.push_back({ x1, (2.0*pi)/5.0, planetgen::get_planet_height(x1, (2.0*pi)/5.0, seed) * 100.0 * height });   // North point 2   (2)
+    VertexArray.push_back({ x1, (4.0*pi)/5.0, planetgen::get_planet_height(x1, (4.0*pi)/5.0, seed) * 100.0 * height });   // North point 3   (3)
+    VertexArray.push_back({ x1, (6.0*pi)/5.0, planetgen::get_planet_height(x1, (6.0*pi)/5.0, seed) * 100.0 * height });   // North point 4   (4)
+    VertexArray.push_back({ x1, (8.0*pi)/5.0, planetgen::get_planet_height(x1, (8.0*pi)/5.0, seed) * 100.0 * height });   // North point 5   (5)
 // Southern vertices
     VertexArray.push_back({ -x1, pi/5.0, planetgen::get_planet_height(-x1, pi/5.0, seed) * 100 *  height });        // South point 1.5 (6)
-    VertexArray.push_back({ -x1, (3.0*pi)/5.0, planetgen::get_planet_height(-x1, (3.0*pi)/5.0, seed) * 100 *  height });  // South point 2.5 (7)
-    VertexArray.push_back({ -x1, (5.0*pi)/5.0, planetgen::get_planet_height(-x1, (5.0*pi)/5.0, seed) * 100 *  height });  // South point 3.5 (8)
-    VertexArray.push_back({ -x1, (7.0*pi)/5.0, planetgen::get_planet_height(-x1, (7.0*pi)/5.0, seed) * 100 *  height });  // South point 4.5 (9)
-    VertexArray.push_back({ -x1, (9.0*pi)/5.0, planetgen::get_planet_height(-x1, (9.0*pi)/5.0, seed) * 100 *  height });  // South point 5.5 (10)
-    VertexArray.push_back({ -pi/2.0, 0.0, planetgen::get_planet_height(-pi/2.0, 0.0, seed) * 100 * height });       // South pole      (11)
+    VertexArray.push_back({ -x1, (3.0*pi)/5.0, planetgen::get_planet_height(-x1, (3.0*pi)/5.0, seed) * 100.0 *  height });  // South point 2.5 (7)
+    VertexArray.push_back({ -x1, (5.0*pi)/5.0, planetgen::get_planet_height(-x1, (5.0*pi)/5.0, seed) * 100.0 *  height });  // South point 3.5 (8)
+    VertexArray.push_back({ -x1, (7.0*pi)/5.0, planetgen::get_planet_height(-x1, (7.0*pi)/5.0, seed) * 100.0 *  height });  // South point 4.5 (9)
+    VertexArray.push_back({ -x1, (9.0*pi)/5.0, planetgen::get_planet_height(-x1, (9.0*pi)/5.0, seed) * 100.0 *  height });  // South point 5.5 (10)
+    VertexArray.push_back({ -pi/2.0, 0.0, planetgen::get_planet_height(-pi/2.0, 0.0, seed) * 100.0 * height });       // South pole      (11)
 
  return VertexArray;   
 }
@@ -241,11 +241,13 @@ for ( int fcount = 0; fcount < fcountMax; fcount++)
       int v_I3 = FaceArray_current.at(fcount).v3; // index of vertex 3 on parent face (South)
       int v_I4 = FaceArray_current.at(fcount).v4; // index of vertex 4 on parent face (West) 
       int v_I5 = -1;
+      double elevation = 1.0; // value here is irrellevant and only used to initialize the variable.
       int edgecheck = checkEdgeDivide(EdgeArray, v_I1, v_I2);
       if (edgecheck == -1)
       {
           vector<double> midpoint_temp = midpointCalc(VertexArray.at(v_I1).v_Lat, VertexArray.at(v_I1).v_Long, VertexArray.at(v_I2).v_Lat, VertexArray.at(v_I2).v_Long);
-          VertexArray.push_back({ midpoint_temp.at(0), midpoint_temp.at(1), height }); // Add vertices to VertexArray
+          elevation = planetgen::get_planet_height(midpoint_temp.at(0), midpoint_temp.at(1), seed) * 100.0 *  height ; // generate the height value at the coordinates
+          VertexArray.push_back({ midpoint_temp.at(0), midpoint_temp.at(1), elevation }); // Add vertices to VertexArray
           midpoint_temp.clear();
           v_I5 = VertexArray.size()-1;
           if (v_I1 < v_I2)
