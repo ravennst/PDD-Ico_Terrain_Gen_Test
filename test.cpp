@@ -21,7 +21,7 @@ using namespace std;
 const double pi = 3.141592653589793;
 const double seed = 0.21;
 int Tessalation_Level = 0;
-const double radius = 20.0;
+const double radius = 2.0;
 const double heightMod = 1.0;
 bool triOrQuad = true; // if false the output will be quads, if true the output will be triangles
 
@@ -85,21 +85,21 @@ South_Long5 = (9*pi)/5;
 */
 
 // Northern vertices
-    VertexArray.push_back({ pi/2.0, 0.0, planetgen::get_planet_height(pi/2, 0, seed) * heightMod + radius });        // North pole      (0)
+    VertexArray.push_back({ pi/2.0, 0.0, (planetgen::get_planet_height(pi/2, 0, seed) * heightMod) + radius });        // North pole      (0)
 //           cout << planetgen::get_planet_height(pi/2, 0, seed) * 100 * height << endl;
 //           cout << height << endl;
-    VertexArray.push_back({ x1, 0.0, planetgen::get_planet_height(x1, 0.0, seed)  });            // North point 1   (1)
-    VertexArray.push_back({ x1, (2.0*pi)/5.0, planetgen::get_planet_height(x1, (2.0*pi)/5.0, seed) * heightMod + radius });   // North point 2   (2)
-    VertexArray.push_back({ x1, (4.0*pi)/5.0, planetgen::get_planet_height(x1, (4.0*pi)/5.0, seed) * heightMod + radius });   // North point 3   (3)
-    VertexArray.push_back({ x1, (6.0*pi)/5.0, planetgen::get_planet_height(x1, (6.0*pi)/5.0, seed) * heightMod + radius });   // North point 4   (4)
-    VertexArray.push_back({ x1, (8.0*pi)/5.0, planetgen::get_planet_height(x1, (8.0*pi)/5.0, seed) * heightMod + radius });   // North point 5   (5)
+    VertexArray.push_back({ x1, 0.0, (planetgen::get_planet_height(x1, 0.0, seed) * heightMod) + radius  });            // North point 1   (1)
+    VertexArray.push_back({ x1, (2.0*pi)/5.0, (planetgen::get_planet_height(x1, (2.0*pi)/5.0, seed) * heightMod) + radius });   // North point 2   (2)
+    VertexArray.push_back({ x1, (4.0*pi)/5.0, (planetgen::get_planet_height(x1, (4.0*pi)/5.0, seed) * heightMod) + radius });   // North point 3   (3)
+    VertexArray.push_back({ x1, (6.0*pi)/5.0, (planetgen::get_planet_height(x1, (6.0*pi)/5.0, seed) * heightMod) + radius });   // North point 4   (4)
+    VertexArray.push_back({ x1, (8.0*pi)/5.0, (planetgen::get_planet_height(x1, (8.0*pi)/5.0, seed) * heightMod) + radius });   // North point 5   (5)
 // Southern vertices
-    VertexArray.push_back({ -x1, pi/5.0, planetgen::get_planet_height(-x1, pi/5.0, seed)  });        // South point 1.5 (6)
-    VertexArray.push_back({ -x1, (3.0*pi)/5.0, planetgen::get_planet_height(-x1, (3.0*pi)/5.0, seed) * heightMod + radius });  // South point 2.5 (7)
-    VertexArray.push_back({ -x1, (5.0*pi)/5.0, planetgen::get_planet_height(-x1, (5.0*pi)/5.0, seed) * heightMod + radius });  // South point 3.5 (8)
-    VertexArray.push_back({ -x1, (7.0*pi)/5.0, planetgen::get_planet_height(-x1, (7.0*pi)/5.0, seed) * heightMod + radius });  // South point 4.5 (9)
-    VertexArray.push_back({ -x1, (9.0*pi)/5.0, planetgen::get_planet_height(-x1, (9.0*pi)/5.0, seed) * heightMod + radius });  // South point 5.5 (10)
-    VertexArray.push_back({ -pi/2.0, 0.0, planetgen::get_planet_height(-pi/2.0, 0.0, seed) * heightMod + radius });       // South pole      (11)
+    VertexArray.push_back({ -x1, pi/5.0, (planetgen::get_planet_height(-x1, pi/5.0, seed) * heightMod) + radius });        // South point 1.5 (6)
+    VertexArray.push_back({ -x1, (3.0*pi)/5.0, (planetgen::get_planet_height(-x1, (3.0*pi)/5.0, seed) * heightMod) + radius });  // South point 2.5 (7)
+    VertexArray.push_back({ -x1, (5.0*pi)/5.0, (planetgen::get_planet_height(-x1, (5.0*pi)/5.0, seed) * heightMod) + radius });  // South point 3.5 (8)
+    VertexArray.push_back({ -x1, (7.0*pi)/5.0, (planetgen::get_planet_height(-x1, (7.0*pi)/5.0, seed) * heightMod) + radius });  // South point 4.5 (9)
+    VertexArray.push_back({ -x1, (9.0*pi)/5.0, (planetgen::get_planet_height(-x1, (9.0*pi)/5.0, seed) * heightMod) + radius });  // South point 5.5 (10)
+    VertexArray.push_back({ -pi/2.0, 0.0, (planetgen::get_planet_height(-pi/2.0, 0.0, seed) * heightMod) + radius });       // South pole      (11)
 
  return VertexArray;   
 }
