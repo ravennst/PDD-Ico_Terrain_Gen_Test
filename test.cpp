@@ -94,12 +94,12 @@ South_Long5 = (9*pi)/5;
     VertexArray.push_back({ x1, (6.0*pi)/5.0, planetgen::get_planet_height(x1, (6.0*pi)/5.0, seed) * 100 * height });   // North point 4   (4)
     VertexArray.push_back({ x1, (8.0*pi)/5.0, planetgen::get_planet_height(x1, (8.0*pi)/5.0, seed) * 100 * height });   // North point 5   (5)
 // Southern vertices
-    VertexArray.push_back({ -x1, pi/5.0, height });        // South point 1.5 (6)
-    VertexArray.push_back({ -x1, (3.0*pi)/5.0, height });  // South point 2.5 (7)
-    VertexArray.push_back({ -x1, (5.0*pi)/5.0, height });  // South point 3.5 (8)
-    VertexArray.push_back({ -x1, (7.0*pi)/5.0, height });  // South point 4.5 (9)
-    VertexArray.push_back({ -x1, (9.0*pi)/5.0, height });  // South point 5.5 (10)
-    VertexArray.push_back({ -pi/2.0, 0.0, height });       // South pole      (11)
+    VertexArray.push_back({ -x1, pi/5.0, planetgen::get_planet_height(-x1, pi/5.0, seed) * 100 *  height });        // South point 1.5 (6)
+    VertexArray.push_back({ -x1, (3.0*pi)/5.0, planetgen::get_planet_height(-x1, (3.0*pi)/5.0, seed) * 100 *  height });  // South point 2.5 (7)
+    VertexArray.push_back({ -x1, (5.0*pi)/5.0, planetgen::get_planet_height(-x1, (5.0*pi)/5.0, seed) * 100 *  height });  // South point 3.5 (8)
+    VertexArray.push_back({ -x1, (7.0*pi)/5.0, planetgen::get_planet_height(-x1, (7.0*pi)/5.0, seed) * 100 *  height });  // South point 4.5 (9)
+    VertexArray.push_back({ -x1, (9.0*pi)/5.0, planetgen::get_planet_height(-x1, (9.0*pi)/5.0, seed) * 100 *  height });  // South point 5.5 (10)
+    VertexArray.push_back({ -pi/2.0, 0.0, planetgen::get_planet_height(-pi/2.0, 0.0, seed) * 100 * height });       // South pole      (11)
 
  return VertexArray;   
 }
