@@ -35,5 +35,4 @@
 *.app
 
 # Files
-tasks.json
-launch.json
+.vscode/

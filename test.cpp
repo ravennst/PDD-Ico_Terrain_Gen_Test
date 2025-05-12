@@ -22,7 +22,7 @@ const double pi = 3.141592653589793;
 const double seed = 0.21;
 int Tessalation_Level = 0;
 const double radius = 10.0;
-const double heightMod = 1.0;
+const double heightMod = 10.0;
 bool triOrQuad = true; // if false the output will be quads, if true the output will be triangles
 
 // Defines the latitude, longitude, and height of each vertex.
@@ -282,7 +282,8 @@ for ( int fcount = 0; fcount < fcountMax; fcount++)
       if (checkEdgeDivide(EdgeArray, v_I3,v_I4)==-1)
       {
           vector<double> midpoint_temp = midpointCalc(VertexArray.at(v_I3).v_Lat, VertexArray.at(v_I3).v_Long, VertexArray.at(v_I4).v_Lat, VertexArray.at(v_I4).v_Long);
-          VertexArray.push_back({ midpoint_temp.at(0), midpoint_temp.at(1), radius });
+          elevation = planetgen::get_planet_height(midpoint_temp.at(0), midpoint_temp.at(1), seed) * heightMod + radius; // generate the height value at the coordinates
+          VertexArray.push_back({ midpoint_temp.at(0), midpoint_temp.at(1), elevation });
           midpoint_temp.clear();
           v_I7 = VertexArray.size()-1;
           EdgeArray.push_back({ v_I3, v_I4, v_I7 }); // add calculated edge to edgeArray
@@ -295,7 +296,8 @@ for ( int fcount = 0; fcount < fcountMax; fcount++)
       if (checkEdgeDivide(EdgeArray, v_I4,v_I1)==-1)
       {
           vector<double> midpoint_temp = midpointCalc(VertexArray.at(v_I4).v_Lat, VertexArray.at(v_I4).v_Long, VertexArray.at(v_I1).v_Lat, VertexArray.at(v_I1).v_Long);
-          VertexArray.push_back({ midpoint_temp.at(0), midpoint_temp.at(1), radius });
+          elevation = planetgen::get_planet_height(midpoint_temp.at(0), midpoint_temp.at(1), seed) * heightMod + radius; // generate the height value at the coordinates
+          VertexArray.push_back({ midpoint_temp.at(0), midpoint_temp.at(1), elevation });
           midpoint_temp.clear();
           v_I8 = VertexArray.size()-1;
           EdgeArray.push_back({ v_I4, v_I1, v_I8 }); // add calculated edge to edgeArray
@@ -306,7 +308,8 @@ for ( int fcount = 0; fcount < fcountMax; fcount++)
       }
 // int v_I9 = -1;
           vector<double> midpoint_temp = midpointCalc(VertexArray.at(v_I2).v_Lat, VertexArray.at(v_I2).v_Long, VertexArray.at(v_I4).v_Lat, VertexArray.at(v_I4).v_Long);
-          VertexArray.push_back({ midpoint_temp.at(0), midpoint_temp.at(1), radius });
+          elevation = planetgen::get_planet_height(midpoint_temp.at(0), midpoint_temp.at(1), seed) * heightMod + radius; // generate the height value at the coordinates
+          VertexArray.push_back({ midpoint_temp.at(0), midpoint_temp.at(1), elevation });
           midpoint_temp.clear();
           int v_I9 = VertexArray.size()-1;
           EdgeArray.push_back({ v_I2, v_I4, v_I9});
