@@ -20,7 +20,7 @@ using namespace std;
 
 const double pi = 3.141592653589793;
 const double seed = 0.21;
-int Tessalation_Level = 0;
+int Tessalation_Level = 8;
 const double radius = 10.0;
 const double heightMod = 10.0;
 bool triOrQuad = true; // if false the output will be quads, if true the output will be triangles
@@ -234,8 +234,14 @@ cout << FaceArray_current.size() << " faces created." << endl << endl;
   vector <struct_FaceArray> FaceArray_new;
     
   // Step 2: Face Subdivide Loop
-for ( int fcount = 0; fcount < fcountMax; fcount++)
+  int progressInterval = std::max(1, fcountMax / 100);
+  for ( int fcount = 0; fcount < fcountMax; fcount++)
 {
+       if (fcount % progressInterval == 0) {
+        cout << "  Tessellation Level " << (Tessalation_Level - Tessalation_Level_current + 1)
+             << " | Face " << fcount << " / " << fcountMax
+             << " | Current vertex count: " << VertexArray.size() << "\r" << flush;
+    }
       int v_I1 = FaceArray_current.at(fcount).v1; // index of vertex 1 on parent face (North)
       int v_I2 = FaceArray_current.at(fcount).v2; // index of vertex 2 on parent face (East)
       int v_I3 = FaceArray_current.at(fcount).v3; // index of vertex 3 on parent face (South)
