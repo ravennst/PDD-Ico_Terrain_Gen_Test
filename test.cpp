@@ -63,8 +63,8 @@ v9s is the midpoint between v2s & v4s
 // ******************************* Functions ********************
 
 // Generates the 12 vertices of a regular icosahedron, aligned so that one vertex is at the north pole of the sphere and two vertices are aligned opposite each other on the z-axis
-vector<struct_VertexArray> generate_initial_icosahedron_vertices() { // function named "generate_icosahedron_vertices" using vector<Vertex> instead of void.
-  vector<struct_VertexArray> VertexArray; // initializes vartype:vector using struct_VertexArray.
+std::vector<struct_VertexArray> generate_initial_icosahedron_vertices() { // function named "generate_icosahedron_vertices" using std::vector<Vertex> instead of void.
+  std::vector<struct_VertexArray> VertexArray; // initializes vartype:vector using struct_VertexArray.
 
 // vertices above and below the equator
 double ico_cAngle = acos(sqrt(5.0)/5.0); // central angle of an icosahedron in radians, approx 63.4 degrees.
@@ -104,13 +104,13 @@ South_Long5 = (9*pi)/5;
  return VertexArray;   
 }
 
-vector<struct_FaceArray> associate_initial_faces() { // This is a function.
-    vector<struct_FaceArray> FaceArray_current;
+std::vector<struct_FaceArray> associate_initial_faces() { // This is a function.
+    std::vector<struct_FaceArray> FaceArray_current;
     // Faces are associated by band in the order of West-to-East then North-to-South direction
     // before moving to the next band to the East.
     // variables: v1, v2, v3, v4; Rhombus:North/East/West/South
     FaceArray_current.push_back({ 0, 2,  6,  1 }); // index numbers were marked down by 1
-    FaceArray_current.push_back({ 1, 6,  11, 10}); // since the vector starts at 0
+    FaceArray_current.push_back({ 1, 6,  11, 10}); // since the std::vector starts at 0
     FaceArray_current.push_back({ 0, 3,  7,  2 });
     FaceArray_current.push_back({ 2, 7,  11, 6 });
     FaceArray_current.push_back({ 0, 4,  8,  3 });
@@ -125,11 +125,11 @@ vector<struct_FaceArray> associate_initial_faces() { // This is a function.
 
 // Function to find the midpoint between two points : output is vertex<double> (Lat, Long)
 // input and output in radians
-vector<double> midpointCalc(double Lat_1, double Long_1, double Lat_2, double Long_2) { // Function
+std::vector<double> midpointCalc(double Lat_1, double Long_1, double Lat_2, double Long_2) { // Function
   double dLong = Long_2 - Long_1;
   double Bx = cos(Lat_2)*cos(dLong);
   double By = cos(Lat_2)*sin(dLong);
-  // vector<double> midpointoutput = { atan2(sin(Lat_1)+sin(Lat_2), pow(sqrt(cos(Lat_1)+Bx),2)+pow(By,2)), atan2(By,cos(Lat_1+Bx)) };
+  // std::vector<double> midpointoutput = { atan2(sin(Lat_1)+sin(Lat_2), pow(sqrt(cos(Lat_1)+Bx),2)+pow(By,2)), atan2(By,cos(Lat_1+Bx)) };
   //return midpointoutput;   
   double z = sin(Lat_1) + sin(Lat_2);
   double x = cos(Lat_1) + Bx;
@@ -163,7 +163,7 @@ vector<double> midpointCalc(double Lat_1, double Long_1, double Lat_2, double Lo
  
 // function to check if an edge has been subdivided and return the vertex index of the midpoint if it has
 // OR return a value of -1 if it hasn't.
- int checkEdgeDivide(vector<struct_EdgeArray> &edgeList, int tempOne, int tempTwo) // 3 input arguments (name of array to check (EdgeArray), target start, target end)
+ int checkEdgeDivide(std::vector<struct_EdgeArray> &edgeList, int tempOne, int tempTwo) // 3 input arguments (name of array to check (EdgeArray), target start, target end)
  {
     // std::find_if searches for the first element in edgeList that satisfies the lambda condition
     int targetOne, targetTwo;
@@ -199,8 +199,8 @@ int main() {
 
   using namespace std;  
 // Generate the inital 12 vertices and original 10 faces.  
-  vector<struct_VertexArray> VertexArray = generate_initial_icosahedron_vertices(); // Generate initial vertices
-  vector<struct_FaceArray> FaceArray_current = associate_initial_faces(); // Associate initial faces
+  std::vector<struct_VertexArray> VertexArray = generate_initial_icosahedron_vertices(); // Generate initial vertices
+  std::vector<struct_FaceArray> FaceArray_current = associate_initial_faces(); // Associate initial faces
   
   cout << "Is Triangles: " << triOrQuad << endl << endl;
   /*/ **************************    initialization testing
@@ -231,8 +231,8 @@ cout << FaceArray_current.size() << " faces created." << endl << endl;
   // Step 1: Determine number of faces to subdivide and apply that to a count number
   int fcountMax = FaceArray_current.size();
   float fcountPercent = 0.0;
-  vector <struct_EdgeArray> EdgeArray;
-  vector <struct_FaceArray> FaceArray_new;
+  std::vector <struct_EdgeArray> EdgeArray;
+  std::vector <struct_FaceArray> FaceArray_new;
     
   // Step 2: Face Subdivide Loop
   int progressInterval = std::max(1, fcountMax / 100);
@@ -252,7 +252,7 @@ cout << FaceArray_current.size() << " faces created." << endl << endl;
       int edgecheck = checkEdgeDivide(EdgeArray, v_I1, v_I2);
       if (edgecheck == -1)
       {
-          vector<double> midpoint_temp = midpointCalc(VertexArray.at(v_I1).v_Lat, VertexArray.at(v_I1).v_Long, VertexArray.at(v_I2).v_Lat, VertexArray.at(v_I2).v_Long);
+          std::vector<double> midpoint_temp = midpointCalc(VertexArray.at(v_I1).v_Lat, VertexArray.at(v_I1).v_Long, VertexArray.at(v_I2).v_Lat, VertexArray.at(v_I2).v_Long);
           elevation = planetgen::get_planet_height(midpoint_temp.at(0), midpoint_temp.at(1), seed) * heightMod + radius; // generate the height value at the coordinates
           VertexArray.push_back({ midpoint_temp.at(0), midpoint_temp.at(1), elevation }); // Add vertices to VertexArray
           midpoint_temp.clear();
@@ -274,7 +274,7 @@ cout << FaceArray_current.size() << " faces created." << endl << endl;
       int v_I6 = -1;
       if (checkEdgeDivide(EdgeArray, v_I2,v_I3)==-1)
       {
-          vector<double> midpoint_temp = midpointCalc(VertexArray.at(v_I2).v_Lat, VertexArray.at(v_I2).v_Long, VertexArray.at(v_I3).v_Lat, VertexArray.at(v_I3).v_Long);
+          std::vector<double> midpoint_temp = midpointCalc(VertexArray.at(v_I2).v_Lat, VertexArray.at(v_I2).v_Long, VertexArray.at(v_I3).v_Lat, VertexArray.at(v_I3).v_Long);
           elevation = planetgen::get_planet_height(midpoint_temp.at(0), midpoint_temp.at(1), seed) * heightMod + radius; // generate the height value at the coordinates
           VertexArray.push_back({ midpoint_temp.at(0), midpoint_temp.at(1), elevation});
           midpoint_temp.clear();
@@ -288,7 +288,7 @@ cout << FaceArray_current.size() << " faces created." << endl << endl;
       int v_I7 = -1;
       if (checkEdgeDivide(EdgeArray, v_I3,v_I4)==-1)
       {
-          vector<double> midpoint_temp = midpointCalc(VertexArray.at(v_I3).v_Lat, VertexArray.at(v_I3).v_Long, VertexArray.at(v_I4).v_Lat, VertexArray.at(v_I4).v_Long);
+          std::vector<double> midpoint_temp = midpointCalc(VertexArray.at(v_I3).v_Lat, VertexArray.at(v_I3).v_Long, VertexArray.at(v_I4).v_Lat, VertexArray.at(v_I4).v_Long);
           elevation = planetgen::get_planet_height(midpoint_temp.at(0), midpoint_temp.at(1), seed) * heightMod + radius; // generate the height value at the coordinates
           VertexArray.push_back({ midpoint_temp.at(0), midpoint_temp.at(1), elevation });
           midpoint_temp.clear();
@@ -302,7 +302,7 @@ cout << FaceArray_current.size() << " faces created." << endl << endl;
       int v_I8 = -1;
       if (checkEdgeDivide(EdgeArray, v_I4,v_I1)==-1)
       {
-          vector<double> midpoint_temp = midpointCalc(VertexArray.at(v_I4).v_Lat, VertexArray.at(v_I4).v_Long, VertexArray.at(v_I1).v_Lat, VertexArray.at(v_I1).v_Long);
+          std::vector<double> midpoint_temp = midpointCalc(VertexArray.at(v_I4).v_Lat, VertexArray.at(v_I4).v_Long, VertexArray.at(v_I1).v_Lat, VertexArray.at(v_I1).v_Long);
           elevation = planetgen::get_planet_height(midpoint_temp.at(0), midpoint_temp.at(1), seed) * heightMod + radius; // generate the height value at the coordinates
           VertexArray.push_back({ midpoint_temp.at(0), midpoint_temp.at(1), elevation });
           midpoint_temp.clear();
@@ -314,7 +314,7 @@ cout << FaceArray_current.size() << " faces created." << endl << endl;
         v_I8 = checkEdgeDivide(EdgeArray, v_I4,v_I1);
       }
 // int v_I9 = -1;
-          vector<double> midpoint_temp = midpointCalc(VertexArray.at(v_I2).v_Lat, VertexArray.at(v_I2).v_Long, VertexArray.at(v_I4).v_Lat, VertexArray.at(v_I4).v_Long);
+          std::vector<double> midpoint_temp = midpointCalc(VertexArray.at(v_I2).v_Lat, VertexArray.at(v_I2).v_Long, VertexArray.at(v_I4).v_Lat, VertexArray.at(v_I4).v_Long);
           elevation = planetgen::get_planet_height(midpoint_temp.at(0), midpoint_temp.at(1), seed) * heightMod + radius; // generate the height value at the coordinates
           VertexArray.push_back({ midpoint_temp.at(0), midpoint_temp.at(1), elevation });
           midpoint_temp.clear();
@@ -380,7 +380,7 @@ vt u [v] [w]
     Texture coordinate. 'v' is optional (defaults to 0.0). 'w' rarely used.
 
 vn x y z
-    Vertex normal vector.
+    Vertex normal std::vector.
 
 vp u [v] [w]
     Parameter space vertex (used for curves and surfaces).
