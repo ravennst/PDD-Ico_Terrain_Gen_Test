@@ -1,6 +1,7 @@
 /* planet_height.h - self-contained version of Torben AE. Mogensen's terrain height algorithm Simplified for header-only use in voxel engines and spherical planet terrain queries. Input: latitude and longitude (in radians), and a seed Output: height value in range [-1, +1] */
 
-#ifndef PLANET_HEIGHT_H #define PLANET_HEIGHT_H
+#ifndef PLANET_HEIGHT_H 
+#define PLANET_HEIGHT_H
 
 #include <cmath>
 

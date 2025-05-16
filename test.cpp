@@ -16,7 +16,7 @@ Stuff to do:
 #include <sstream>
 #include "planet_height.h"
 
-using namespace std;
+
 
 const double pi = 3.141592653589793;
 const double seed = 0.21;
@@ -196,7 +196,8 @@ vector<double> midpointCalc(double Lat_1, double Long_1, double Lat_2, double Lo
 // **************************************************************************************
 
 int main() {
-  
+
+  using namespace std;  
 // Generate the inital 12 vertices and original 10 faces.  
   vector<struct_VertexArray> VertexArray = generate_initial_icosahedron_vertices(); // Generate initial vertices
   vector<struct_FaceArray> FaceArray_current = associate_initial_faces(); // Associate initial faces
