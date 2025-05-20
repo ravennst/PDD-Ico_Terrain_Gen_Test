@@ -15,7 +15,13 @@ static const double POWA = 1.0;    // Exponent for altitude difference
 static const double dd2 = 0.035;   // Weight for distance
 static const double POW = 0.47;    // Exponent for distance function
 
-static int Depth = 9; // Number of recursive subdivision levels
+// Planetary terrain resolution depth:
+// Depth = ceil(log2(2 * Radius / DesiredChordLength)) * 3
+// For Radius = 5510.077553 km and DesiredChordLength = 0.001 km (1 meter)
+// Depth ≈ 25
+static const int Depth = 25;
+
+static const double SQRT3 = std::sqrt(3.0);
 
 // Biome table (from planet.c)
 static const char biomes[45][46] = {
@@ -72,6 +78,7 @@ struct Vertex {
   double x, y, z;
 };
 
+// Tetrahedron vertices (initialized per request)
 static Vertex tetra[4];
 
 static double rand2(double p, double q) {
@@ -84,6 +91,7 @@ static double dist2(const Vertex& a, const Vertex& b) {
   return dx * dx + dy * dy + dz * dz;
 }
 
+// Recursive planet subdivision function
 static double planet(Vertex a, Vertex b, Vertex c, Vertex d, double x, double y, double z, int level) {
   if (level <= 0) return 0.25 * (a.h + b.h + c.h + d.h);
 
@@ -117,20 +125,22 @@ static double planet(Vertex a, Vertex b, Vertex c, Vertex d, double x, double y,
     return planet(c, d, b, e, x, y, z, level - 1);
 }
 
+// Calls recursive subdivision using preset tetrahedron and depth
 static double planet1(double x, double y, double z) {
   return planet(tetra[0], tetra[1], tetra[2], tetra[3], x, y, z, Depth);
 }
 
+// Sets up tetrahedron from baseSeed and converts lat/lon to XYZ for sampling
 inline double get_planet_height(double latRad, double lonRad, double baseSeed) {
   double r1 = rand2(baseSeed, baseSeed);
   double r2 = rand2(r1, baseSeed);
   double r3 = rand2(r2, r1);
   double r4 = rand2(r3, r2);
 
-  tetra[0] = {M, r1, -1.732, -1.732, -1.732};
-  tetra[1] = {M, r2, -1.732,  1.732,  1.732};
-  tetra[2] = {M, r3,  1.732, -1.732,  1.732};
-  tetra[3] = {M, r4,  1.732,  1.732, -1.732};
+  tetra[0] = {M, r1, -SQRT3 - 0.20, -SQRT3 - 0.22, -SQRT3 - 0.23};
+  tetra[1] = {M, r2, -SQRT3 - 0.19,  SQRT3 + 0.18,  SQRT3 + 0.17};
+  tetra[2] = {M, r3,  SQRT3 + 0.21, -SQRT3 - 0.24,  SQRT3 + 0.15};
+  tetra[3] = {M, r4,  SQRT3 + 0.24,  SQRT3 + 0.22, -SQRT3 - 0.25};
 
   double x = cos(latRad) * cos(lonRad);
   double y = sin(latRad);

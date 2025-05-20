@@ -14,13 +14,13 @@ Stuff to do:
 #include <fstream>
 #include <iomanip>
 #include <sstream>
-#include "planet_height.h"
+#include "planet_height.hpp"
 
 using namespace std; // Moving this to line 200 was a suggested change but I'm rolling it back for now.
 
 const double pi = 3.141592653589793;
 const double seed = 0.21;
-int Tessalation_Level = 5;
+int Tessalation_Level = 8;
 const double radius = 10.0;
 const double heightMod = 10.0;
 bool triOrQuad = true; // if false the output will be quads, if true the output will be triangles
