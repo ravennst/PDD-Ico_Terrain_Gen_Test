@@ -1,0 +1,3 @@
+[submodule "libs/Planet"]
+	path = libs/Planet
+	url = https://github.com/ravennst/Mogensen-Planet-Generator-Header
