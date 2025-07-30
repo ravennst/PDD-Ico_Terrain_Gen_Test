@@ -14,7 +14,9 @@ Stuff to do:
 #include <fstream>
 #include <iomanip>
 #include <sstream>
-#include "planet_height.hpp"
+extern "C" {
+  #include "libs/planet/planet.h"
+}
 
 using namespace std; // Moving this to line 200 was a suggested change but I'm rolling it back for now.
 
