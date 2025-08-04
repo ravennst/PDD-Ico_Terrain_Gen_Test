@@ -38,3 +38,6 @@
 .vscode/
 tasks.json
 launch.json
+
+# Specific linux executables
+test

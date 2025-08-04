@@ -15,16 +15,21 @@ Stuff to do:
 #include <iomanip>
 #include <sstream>
 extern "C" {
-  #include "libs/planet/planet.h"
+  #include "libs/Planet/planet.h"
 }
+
+// variables for planet.h
+double rseed = 0.21; // seed for terrain generation.
+double M = 0.021; // Sea Level modifier.
+planet_vertex tetra[4]; // tetrahedron array.
 
 using namespace std; // Moving this to line 200 was a suggested change but I'm rolling it back for now.
 
 const double pi = 3.141592653589793;
-const double seed = 0.21;
-int Tessalation_Level = 8;
-const double radius = 10.0;
-const double heightMod = 10.0;
+int Tessalation_Level = 7;
+int Calc_Level = Tessalation_Level + 15; // used by planet() to determine the level of detail for the terrain generation.
+const double radius = 1.0;
+const double heightMod = 1.0;
 bool triOrQuad = true; // if false the output will be quads, if true the output will be triangles
 
 // Defines the latitude, longitude, and height of each vertex.
@@ -64,6 +69,20 @@ v9s is the midpoint between v2s & v4s
 */
 // ******************************* Functions ********************
 
+// convert lat/long to xyz
+struct llxyz {
+  double lat, lon, x, y, z;
+};
+
+llxyz ll_to_xyz(double lat, double lon){
+  double x, y, z;
+  x = cos(lat) * sin(lon);
+  y = sin(lat);
+  z = cos(lat) * cos(lon);
+  
+  return {lat, lon, x, y, z};
+}
+
 // Generates the 12 vertices of a regular icosahedron, aligned so that one vertex is at the north pole of the sphere and two vertices are aligned opposite each other on the z-axis
 vector<struct_VertexArray> generate_initial_icosahedron_vertices() { // function named "generate_icosahedron_vertices" using vector<Vertex> instead of void.
   vector<struct_VertexArray> VertexArray; // initializes vartype:vector using struct_VertexArray.
@@ -87,21 +106,55 @@ South_Long5 = (9*pi)/5;
 */
 
 // Northern vertices
-    VertexArray.push_back({ pi/2.0, 0.0, (planetgen::get_planet_height(pi/2, 0, seed) * heightMod) + radius });        // North pole      (0)
+    llxyz coord = ll_to_xyz(pi/2.0, 0.0);
+    planet_out result = planet(tetra[0], tetra[1], tetra[2], tetra[3], coord.x, coord.y, coord.z, Calc_Level);
+    VertexArray.push_back({ pi/2.0, 0.0, (result.h * heightMod) * radius });        // North pole      (0)
 //           cout << planetgen::get_planet_height(pi/2, 0, seed) * 100 * height << endl;
 //           cout << height << endl;
-    VertexArray.push_back({ x1, 0.0, (planetgen::get_planet_height(x1, 0.0, seed) * heightMod) + radius  });            // North point 1   (1)
-    VertexArray.push_back({ x1, (2.0*pi)/5.0, (planetgen::get_planet_height(x1, (2.0*pi)/5.0, seed) * heightMod) + radius });   // North point 2   (2)
-    VertexArray.push_back({ x1, (4.0*pi)/5.0, (planetgen::get_planet_height(x1, (4.0*pi)/5.0, seed) * heightMod) + radius });   // North point 3   (3)
-    VertexArray.push_back({ x1, (6.0*pi)/5.0, (planetgen::get_planet_height(x1, (6.0*pi)/5.0, seed) * heightMod) + radius });   // North point 4   (4)
-    VertexArray.push_back({ x1, (8.0*pi)/5.0, (planetgen::get_planet_height(x1, (8.0*pi)/5.0, seed) * heightMod) + radius });   // North point 5   (5)
+    coord = ll_to_xyz(x1, 0.0);
+    result = planet(tetra[0], tetra[1], tetra[2], tetra[3], coord.x, coord.y, coord.z, Calc_Level);
+    VertexArray.push_back({ x1, 0.0, (result.h * heightMod) * radius  });            // North point 1   (1)
+    
+    coord = ll_to_xyz(x1, (2.0*pi)/5.0);
+    result = planet(tetra[0], tetra[1], tetra[2], tetra[3], coord.x, coord.y, coord.z, Calc_Level);
+    VertexArray.push_back({ x1, (2.0*pi)/5.0, (result.h * heightMod) * radius });   // North point 2   (2)
+
+    coord = ll_to_xyz(x1, (4.0*pi)/5.0);
+    result = planet(tetra[0], tetra[1], tetra[2], tetra[3], coord.x, coord.y, coord.z, Calc_Level);
+    VertexArray.push_back({ x1, (4.0*pi)/5.0, (result.h * heightMod) * radius });   // North point 3   (3)
+
+    coord = ll_to_xyz(x1, (6.0*pi)/5.0);
+    result = planet(tetra[0], tetra[1], tetra[2], tetra[3], coord.x, coord.y, coord.z, Calc_Level);
+    VertexArray.push_back({ x1, (6.0*pi)/5.0, (result.h * heightMod) * radius });   // North point 4   (4)
+
+    coord = ll_to_xyz(x1, (8.0*pi)/5.0);
+    result = planet(tetra[0], tetra[1], tetra[2], tetra[3], coord.x, coord.y, coord.z, Calc_Level);
+    VertexArray.push_back({ x1, (8.0*pi)/5.0, (result.h * heightMod) * radius });   // North point 5   (5)
+    
 // Southern vertices
-    VertexArray.push_back({ -x1, pi/5.0, (planetgen::get_planet_height(-x1, pi/5.0, seed) * heightMod) + radius });        // South point 1.5 (6)
-    VertexArray.push_back({ -x1, (3.0*pi)/5.0, (planetgen::get_planet_height(-x1, (3.0*pi)/5.0, seed) * heightMod) + radius });  // South point 2.5 (7)
-    VertexArray.push_back({ -x1, (5.0*pi)/5.0, (planetgen::get_planet_height(-x1, (5.0*pi)/5.0, seed) * heightMod) + radius });  // South point 3.5 (8)
-    VertexArray.push_back({ -x1, (7.0*pi)/5.0, (planetgen::get_planet_height(-x1, (7.0*pi)/5.0, seed) * heightMod) + radius });  // South point 4.5 (9)
-    VertexArray.push_back({ -x1, (9.0*pi)/5.0, (planetgen::get_planet_height(-x1, (9.0*pi)/5.0, seed) * heightMod) + radius });  // South point 5.5 (10)
-    VertexArray.push_back({ -pi/2.0, 0.0, (planetgen::get_planet_height(-pi/2.0, 0.0, seed) * heightMod) + radius });       // South pole      (11)
+    coord = ll_to_xyz(-x1, pi/5.0);
+    result = planet(tetra[0], tetra[1], tetra[2], tetra[3], coord.x, coord.y, coord.z, Calc_Level);
+    VertexArray.push_back({ -x1, pi/5.0, (result.h * heightMod) * radius });        // South point 1.5 (6)
+    
+    coord = ll_to_xyz(-x1, (3.0*pi)/5.0);
+    result = planet(tetra[0], tetra[1], tetra[2], tetra[3], coord.x, coord.y, coord.z, Calc_Level);
+    VertexArray.push_back({ -x1, (3.0*pi)/5.0, (result.h * heightMod) * radius });  // South point 2.5 (7)
+
+    coord = ll_to_xyz(-x1, (5.0*pi)/5.0);
+    result = planet(tetra[0], tetra[1], tetra[2], tetra[3], coord.x, coord.y, coord.z, Calc_Level);
+    VertexArray.push_back({ -x1, (5.0*pi)/5.0, (result.h * heightMod) * radius });  // South point 3.5 (8)
+
+    coord = ll_to_xyz(-x1, (7.0*pi)/5.0);
+    result = planet(tetra[0], tetra[1], tetra[2], tetra[3], coord.x, coord.y, coord.z, Calc_Level);
+    VertexArray.push_back({ -x1, (7.0*pi)/5.0, (result.h * heightMod) * radius });  // South point 4.5 (9)
+
+    coord = ll_to_xyz(-x1, (9.0*pi)/5.0);
+    result = planet(tetra[0], tetra[1], tetra[2], tetra[3], coord.x, coord.y, coord.z, Calc_Level);
+    VertexArray.push_back({ -x1, (9.0*pi)/5.0, (result.h * heightMod) * radius });  // South point 5.5 (10)
+
+    coord = ll_to_xyz(-pi/2.0, 0.0);
+    result = planet(tetra[0], tetra[1], tetra[2], tetra[3], coord.x, coord.y, coord.z, Calc_Level);
+    VertexArray.push_back({ -pi/2.0, 0.0, (result.h * heightMod) * radius });       // South pole      (11)
 
  return VertexArray;   
 }
@@ -198,6 +251,8 @@ vector<double> midpointCalc(double Lat_1, double Long_1, double Lat_2, double Lo
 // **************************************************************************************
 
 int main() {
+  initialize_vertices(); // Initialize the tetrahedron vertices and seed for planet generation
+  llxyz coord;
 
 //  using namespace std;  // commented out until I can figure out what's going on.
 // Generate the inital 12 vertices and original 10 faces.  
@@ -237,13 +292,15 @@ cout << FaceArray_current.size() << " faces created." << endl << endl;
   vector <struct_FaceArray> FaceArray_new;
     
   // Step 2: Face Subdivide Loop
-  int progressInterval = std::max(1, fcountMax / 100);
+  int progressInterval = std::max(1, std::min(5000, fcountMax / 100));
   for ( int fcount = 0; fcount < fcountMax; fcount++)
 {
        if (fcount % progressInterval == 0) {
+        fcountPercent = (static_cast<float>(fcount) / fcountMax) * 100.0;
         cout << "  Tessellation Level " << (Tessalation_Level - Tessalation_Level_current + 1)
              << " | Face " << fcount << " / " << fcountMax
-             << " | Current vertex count: " << VertexArray.size() << "\r" << flush;
+             << " | Current vertex count: " << VertexArray.size() 
+             << " | " << fcountPercent << "%" << "\r" << flush;
     }
       int v_I1 = FaceArray_current.at(fcount).v1; // index of vertex 1 on parent face (North)
       int v_I2 = FaceArray_current.at(fcount).v2; // index of vertex 2 on parent face (East)
@@ -255,7 +312,9 @@ cout << FaceArray_current.size() << " faces created." << endl << endl;
       if (edgecheck == -1)
       {
           vector<double> midpoint_temp = midpointCalc(VertexArray.at(v_I1).v_Lat, VertexArray.at(v_I1).v_Long, VertexArray.at(v_I2).v_Lat, VertexArray.at(v_I2).v_Long);
-          elevation = planetgen::get_planet_height(midpoint_temp.at(0), midpoint_temp.at(1), seed) * heightMod + radius; // generate the height value at the coordinates
+          coord = ll_to_xyz(midpoint_temp.at(0), midpoint_temp.at(1));
+          planet_out result = planet(tetra[0], tetra[1], tetra[2], tetra[3], coord.x, coord.y, coord.z, Calc_Level);
+          elevation = result.h * heightMod * radius; // generate the height value at the coordinates
           VertexArray.push_back({ midpoint_temp.at(0), midpoint_temp.at(1), elevation }); // Add vertices to VertexArray
           midpoint_temp.clear();
           v_I5 = VertexArray.size()-1;
@@ -277,7 +336,9 @@ cout << FaceArray_current.size() << " faces created." << endl << endl;
       if (checkEdgeDivide(EdgeArray, v_I2,v_I3)==-1)
       {
           vector<double> midpoint_temp = midpointCalc(VertexArray.at(v_I2).v_Lat, VertexArray.at(v_I2).v_Long, VertexArray.at(v_I3).v_Lat, VertexArray.at(v_I3).v_Long);
-          elevation = planetgen::get_planet_height(midpoint_temp.at(0), midpoint_temp.at(1), seed) * heightMod + radius; // generate the height value at the coordinates
+          coord = ll_to_xyz(midpoint_temp.at(0), midpoint_temp.at(1));
+          planet_out result = planet(tetra[0], tetra[1], tetra[2], tetra[3], coord.x, coord.y, coord.z, Calc_Level);
+          elevation = result.h * heightMod * radius; // generate the height value at the coordinates
           VertexArray.push_back({ midpoint_temp.at(0), midpoint_temp.at(1), elevation});
           midpoint_temp.clear();
           v_I6 = VertexArray.size()-1;
@@ -291,7 +352,9 @@ cout << FaceArray_current.size() << " faces created." << endl << endl;
       if (checkEdgeDivide(EdgeArray, v_I3,v_I4)==-1)
       {
           vector<double> midpoint_temp = midpointCalc(VertexArray.at(v_I3).v_Lat, VertexArray.at(v_I3).v_Long, VertexArray.at(v_I4).v_Lat, VertexArray.at(v_I4).v_Long);
-          elevation = planetgen::get_planet_height(midpoint_temp.at(0), midpoint_temp.at(1), seed) * heightMod + radius; // generate the height value at the coordinates
+          coord = ll_to_xyz(midpoint_temp.at(0), midpoint_temp.at(1));
+          planet_out result = planet(tetra[0], tetra[1], tetra[2], tetra[3], coord.x, coord.y, coord.z, Calc_Level);
+          elevation = result.h * heightMod * radius; // generate the height value at the coordinates
           VertexArray.push_back({ midpoint_temp.at(0), midpoint_temp.at(1), elevation });
           midpoint_temp.clear();
           v_I7 = VertexArray.size()-1;
@@ -305,7 +368,9 @@ cout << FaceArray_current.size() << " faces created." << endl << endl;
       if (checkEdgeDivide(EdgeArray, v_I4,v_I1)==-1)
       {
           vector<double> midpoint_temp = midpointCalc(VertexArray.at(v_I4).v_Lat, VertexArray.at(v_I4).v_Long, VertexArray.at(v_I1).v_Lat, VertexArray.at(v_I1).v_Long);
-          elevation = planetgen::get_planet_height(midpoint_temp.at(0), midpoint_temp.at(1), seed) * heightMod + radius; // generate the height value at the coordinates
+          coord = ll_to_xyz(midpoint_temp.at(0), midpoint_temp.at(1));
+          planet_out result = planet(tetra[0], tetra[1], tetra[2], tetra[3], coord.x, coord.y, coord.z, Calc_Level);
+          elevation = result.h * heightMod * radius; // generate the height value at the coordinates
           VertexArray.push_back({ midpoint_temp.at(0), midpoint_temp.at(1), elevation });
           midpoint_temp.clear();
           v_I8 = VertexArray.size()-1;
@@ -317,7 +382,9 @@ cout << FaceArray_current.size() << " faces created." << endl << endl;
       }
 // int v_I9 = -1;
           vector<double> midpoint_temp = midpointCalc(VertexArray.at(v_I2).v_Lat, VertexArray.at(v_I2).v_Long, VertexArray.at(v_I4).v_Lat, VertexArray.at(v_I4).v_Long);
-          elevation = planetgen::get_planet_height(midpoint_temp.at(0), midpoint_temp.at(1), seed) * heightMod + radius; // generate the height value at the coordinates
+          coord = ll_to_xyz(midpoint_temp.at(0), midpoint_temp.at(1));
+          planet_out result = planet(tetra[0], tetra[1], tetra[2], tetra[3], coord.x, coord.y, coord.z, Calc_Level);
+          elevation = result.h * heightMod * radius; // generate the height value at the coordinates
           VertexArray.push_back({ midpoint_temp.at(0), midpoint_temp.at(1), elevation });
           midpoint_temp.clear();
           int v_I9 = VertexArray.size()-1;
@@ -331,7 +398,7 @@ FaceArray_new.push_back ({v_I8, v_I9, v_I7, v_I4}); // Face 4
 // fcountPercent = (static_cast<float>(fcount) / fcountMax) * 100.0f;
 // cout << endl << "Tessalation Level " << Tessalation_Level_current << ": " << fcountPercent << "% complete." << endl; }
 }
- cout << "Tessalation " << Tessalation_Level - Tessalation_Level_current + 1 << " of " << Tessalation_Level << " complete." << endl;
+ cout << endl << "Tessalation " << Tessalation_Level - Tessalation_Level_current + 1 << " of " << Tessalation_Level << " complete." << endl;
 FaceArray_current.clear();
 FaceArray_current = FaceArray_new;
 cout << VertexArray.size() << " vertices calculated." << endl;
@@ -437,9 +504,20 @@ ofstream outFile(OutputFileName); // Create and open a file named output.txt
 
         // add vertices to output file.
         for (struct_VertexArray vertex_loop: VertexArray) {
-          double x = vertex_loop.v_Height * cos(vertex_loop.v_Lat) * cos(vertex_loop.v_Long);
-          double y = vertex_loop.v_Height * cos(vertex_loop.v_Lat) * sin(vertex_loop.v_Long);
-          double z = vertex_loop.v_Height * sin(vertex_loop.v_Lat);
+          /* commented out for bug fix
+ //         double x = vertex_loop.v_Height * cos(vertex_loop.v_Lat) * cos(vertex_loop.v_Long);
+ //         double y = vertex_loop.v_Height * cos(vertex_loop.v_Lat) * sin(vertex_loop.v_Long);
+ //         double z = vertex_loop.v_Height * sin(vertex_loop.v_Lat);
+ */
+            double unit_x = cos(vertex_loop.v_Lat) * cos(vertex_loop.v_Long);
+            double unit_y = cos(vertex_loop.v_Lat) * sin(vertex_loop.v_Long);
+            double unit_z = sin(vertex_loop.v_Lat);
+
+            double r = radius + vertex_loop.v_Height;
+
+            double x = r * unit_x;
+            double y = r * unit_y;
+            double z = r * unit_z;
 
           // rounding error correction
           if (abs(x) < 1e-10) x = 0.0;
