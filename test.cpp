@@ -524,7 +524,7 @@ ofstream outFile(OutputFileName); // Create and open a file named output.txt
           if (abs(y) < 1e-10) y = 0.0;
           if (abs(z) < 1e-10) z = 0.0;
           
-          outFile << "v " << x << " " << y << " " << z << endl;
+          outFile << "v " << x << " " << y << " " << -z << endl;
           vcount++;
         }
 
