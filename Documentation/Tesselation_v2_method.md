@@ -53,6 +53,13 @@ The project focuses on subdividing an icosphere—an icosahedron whose edges are
 - We will use the value for each row as the Latitude &phi; for the start point &phi;<sub>1</sub> and end point &phi;<sub>2</sub>.
 - The Longitude &lambda; is calculated as 0 rads for &lambda;<sub>1</sub> and (2 \* &pi;)/5 for &lambda;<sub>2</sub>. This will be true until we reach the bottom of the first primary triangle.
 
+- Ignore all of that BS above.
+- We divide the edges of the first quad by the tesselation level. We already have the first four points for those quads so they can be plugged in directly.
+  - Before, the tesselation level was how many times an edge was divided in half but now its a direct number to divide by.
+- The vertices of the first 4 edges are saved to the vertex array in a clockwise order, starting from the North Pole.
+  - This is so we know which vertices serve as outside vertices that get shared with the other 9 quads of the icosahedron.
+  - When we know the array addresses of each subdivided vertex, we could determine face associated without even calculating the vertices. All calculating the vertices does is give us the coordinates of each vertex.
+
 ## <span style="background-color: blue;">Results and Discussion</span>
 
 - Summarize the improvements.
