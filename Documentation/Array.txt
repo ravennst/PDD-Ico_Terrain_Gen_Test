@@ -1,0 +1,62 @@
+10 Faces
+20 eges
+12 primary vertices
+t = tesselation level (equals to the number of sides an edge is being divided into)
+
+
+     0         0         0         0         0
+     /\        /\        /\        /\        /\
+    /  \      /  \      /  \      /  \      /  \
+  e13   e1   e1   e4   e4   e7   e7  e10  e10  e13
+  /      \  /      \  /      \  /      \  /      \
+ /        \/        \/        \/        \/        \
+t13  f9   t1   f1   t4   f3   t7   f5   t10  f7   t13      
+ \        /\        /\        /\        /\        /\
+  \      /  \      /  \      /  \      /  \      /  \
+  e14  e16   e2  e17   e5  e18   e8  e19  e11  e20  e14
+    \  /      \  /      \  /      \  /      \  /      \
+     \/        \/        \/        \/        \/        \
+     t14  f10  t2   f2   t5   f4   t8   f6   t11  f8   t14
+      \        /\        /\        /\        /\        /
+       \      /  \      /  \      /  \      /  \      /
+       e15   e3   e3   e6   e6   e9   e9  e12  e12  e15
+         \  /      \  /      \  /      \  /      \  /
+          \/        \/        \/        \/        \/
+         (t3)       t3       (t3)      (t3)      (t3)     
+          t15                 t6        t9        t12
+
+[0]	    	- North Pole; lat(pi/2),long(0)
+
+[t1]		- Point 1; Lat(pi/2 - acos(sqrt(5)/5)), Long(0)
+[t2]		- point 2; Lat(-(pi/2 - acos(sqrt(5)/5))), Long((2*pi)/(5*2))
+
+[t3]		- South Pole; Lat(-pi/2), Long(0)
+
+[t4]		- Point 2; Lat(pi/2 - acos(sqrt(5)/5)), Long((2*pi)/5)
+[t5]        - Point 5; Lat(-(pi/2 - acos(sqrt(5)/5))), Long((3*2*pi/(5*2)))
+
+[t6] = [t3] - South Pole; use pointer to [t3]
+
+[t7]		- Point 7; Lat(pi/2 - acos(sqrt(5)/5)), Long((2*2*pi)/5)
+[t8]        - point 8; Lat(-(pi/2 - acos(sqrt(5)/5))), Long((5*2*pi/(5*2)))
+
+[t9] = [t3] - South Pole; use pointer to [t3]
+
+[t10]		- Point 10; Lat(pi/2 - acos(sqrt(5)/5)), Long((3*2*pi)/5)
+[t11]       - Point 11; Lat(-(pi/2 - acos(sqrt(5)/5))), Long((7*2*pi/(5*2)))
+
+[t12] = [t3] - South Pole; use pointer to [t3]
+
+[t13]		- Point 13; Lat(pi/2 - acos(sqrt(5)/5)), Long((4*2*pi)/5)
+[t14]       - Point 14; Lat(-(pi/2 - acos(sqrt(5)/5))), Long((9*2*pi/(5*2)))
+
+[t15] = [t3] - South Pole; use point to [t3]
+
+number of vertices inside of a face that DON'T make up an edge; 
+(t-1)^2 where t = tesselation or the number of edges a primary edge is divided into.
+
+10 faces so 
+(t-1)^2 * 10
+
+Size of the array:
+t*15 + (t-1)^2 * 10 + 1 (this is incorrect, I need to address the number of edges properly.)
