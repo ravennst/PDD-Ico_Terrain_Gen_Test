@@ -72,13 +72,16 @@ e16 = (1t, [15t+1, 16t-1], 14t) // 16t is null
 e17 = (4t, [16t+1, 17t-1], 2t)  // 17t is null
 e18 = (7t, [17t+1, 18t-1], 5t)  // 18t is null
 e19 = (10t, [18t+1, 19t-1], 8t) // 19t is null
-e20 = (13t, [19t+1, 20t-1, 11t) // 20t starts the addressing of the face vertices.
+e20 = (13t, [19t+1, 20t-1], 11t) // 20t starts the addressing of the face vertices.
 
 Face Vertex Addressing:
 f0 = [20t, (t-1)^2 + 20t - 2]
      // the minus 2 at the end is because we're not counting the primary edge rows or columns. 
      // A 9x9 grid of vertices would then be calculated as 7x7 since we're not counting the perimeter 
      // vertices since they've already been calculated as the initial edges.
+
+Note: the -2 is throwing me for a loop. Am I skipping any slots in the array?
+
 f1 = [ (t-1)^2 + 20t, 2(t-1)^2 + 20t - 2 ]
 f2 = [2(t-1)^2 + 20t, 3(t-1)^2 + 20t - 2 ]
 f3 = [3(t-1)^2 + 20t, 4(t-1)^2 + 20t - 2 ]
@@ -117,3 +120,45 @@ Addressing of faces would then be done when applying the haversign formulas.
 4. I guess it doesn't matter when I allocate the vertices to the faces, either as I create the vertices or once the entire thing is done. I need to use the same methodology either way.
      a. Faces per row/column are a factor of (t). Use that.
 5. We break down the subdivision of each face per each face. This could allow us to generate a single tile of terrain for testing if we wish.
+
+1. Subdivide e1, [0] & [1t]
+  - store in [1, 1t-1]
+2. Subdivide e2, [1t] & [2t]
+  - store in [1t+1, 2t-1]
+3. Subdivide e3, [2t] & [3t]
+  - store in [2t+1, 3t-1]
+4. Subdivide e4, [0] & [4t]
+  - store in [3t+1, 4t-1]
+5. subdivide e5, [4t] & [5t]
+  - store in [4t+1, 5t-1]
+6. subdivide e6, [5t] & [3t]
+  - store in [5t+1, 6t-1]
+7. subdivide e7, [0] & [7t]
+  - store in [6t+1, 7t-1]
+8. subdivde e8, [7t] & [8t]
+  - store in [7t+1, 8t-1]
+9. subdivide e9, [8t] & [3t]
+  - store in [8t+1, 9t-1]
+10. subdivide e10, [0] & [10t]
+  - store in [9t+1, 10t-1]
+11. subdivide e11, [10t] & [11t]
+  - store in [10t+1, 11t-1]
+12. subdivide e12, [11t] & [3t]
+  - store in [11t+1, 12t-1]
+13. subdivide e13, [0] & [13t]
+  - store in [12t+1, 13t-1]
+14. subdivide e14, [13t] & [14t]
+  - store in [13t+1, 14t-1]
+15. subdivide e15, [14t] & [3t]
+  - store in [14t+1, 15t-1]
+
+16. subdivide e16, [1t] & [14t]
+  - store in [15t+1, 16t-1]
+17. subdivide e17, [4t] & [2t]
+  - store in [16t+1, 17t-1]
+18. subdivide e18, [7t] & [5t]
+  - store in [17t+1, 18t-1]
+19. subdivide e19, [10t] & [8t]
+  - store in [18t+1, 19t-1]
+20. subdivide e20, [13t] & [11t]
+  - store in [19t+1, 20t-1]
