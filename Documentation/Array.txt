@@ -25,73 +25,66 @@ t13  f9   t1   f1   t4   f3   t7   f5   t10  f7   t13
          (t3)       t3       (t3)      (t3)      (t3)     
           t15                 t6        t9        t12
 
-[0]	    	- North Pole; lat(pi/2),long(0)
+[0]	    	- Point 1; North Pole; lat(pi/2),long(0)
 
-[1t]		- Point 1; Lat(pi/2 - acos(sqrt(5)/5)), Long(0)
-[2t]		- point 2; Lat(-(pi/2 - acos(sqrt(5)/5))), Long((2*pi)/(5*2))
+[1t]		- Point 2; Lat(pi/2 - acos(sqrt(5)/5)), Long(0)
+[2t]		- point 3; Lat(-(pi/2 - acos(sqrt(5)/5))), Long((2*pi)/(5*2))
 
-[3t]		- South Pole; Lat(-pi/2), Long(0)
+[3t]		- point 4; South Pole; Lat(-pi/2), Long(0)
 
-[4t]		  - Point 2; Lat(pi/2 - acos(sqrt(5)/5)), Long((2*pi)/5)
-[5t]        - Point 5; Lat(-(pi/2 - acos(sqrt(5)/5))), Long((3*2*pi/(5*2)))
+[4t]		  - Point 5; Lat(pi/2 - acos(sqrt(5)/5)), Long((2*pi)/5)
+[5t]        - Point 6; Lat(-(pi/2 - acos(sqrt(5)/5))), Long((3*2*pi/(5*2)))
 
-[6t] = [3t] - South Pole; use pointer to [t3] or leave null
+[6t] = [3t] - point 4; South Pole; use pointer to [t3] or leave null
 
 [7t]		  - Point 7; Lat(pi/2 - acos(sqrt(5)/5)), Long((2*2*pi)/5)
 [8t]        - point 8; Lat(-(pi/2 - acos(sqrt(5)/5))), Long((5*2*pi/(5*2)))
 
-[9t] = [3t] - South Pole; use pointer to [t3] or leave null
+[9t] = [3t] - point 4; South Pole; use pointer to [t3] or leave null
 
-[10t]	  - Point 10; Lat(pi/2 - acos(sqrt(5)/5)), Long((3*2*pi)/5)
-[11t]       - Point 11; Lat(-(pi/2 - acos(sqrt(5)/5))), Long((7*2*pi/(5*2)))
+[10t]	  - Point 9; Lat(pi/2 - acos(sqrt(5)/5)), Long((3*2*pi)/5)
+[11t]       - Point 10; Lat(-(pi/2 - acos(sqrt(5)/5))), Long((7*2*pi/(5*2)))
 
-[12t] = [3t] - South Pole; use pointer to [t3] or leave null
+[12t] = [3t] - Point 4; South Pole; use pointer to [t3] or leave null
 
-[13t]	  - Point 13; Lat(pi/2 - acos(sqrt(5)/5)), Long((4*2*pi)/5)
-[14t]       - Point 14; Lat(-(pi/2 - acos(sqrt(5)/5))), Long((9*2*pi/(5*2)))
+[13t]	  - Point 11; Lat(pi/2 - acos(sqrt(5)/5)), Long((4*2*pi)/5)
+[14t]       - Point 12; Lat(-(pi/2 - acos(sqrt(5)/5))), Long((9*2*pi/(5*2)))
 
-[15t] = [3t] - South Pole; use pointer to [t3] or leave null
+[15t] = [3t] - Point 4; South Pole; use pointer to [t3] or leave null
 
 Edge Addressing:
-e1 = (0, [1, 1t-1], t1)
-e2 = (1t, [1t+1, 2t-1], 2t)
-e3 = (2t, [2t+1, 3t-1], 3t)
-e4 = (0, [3t+1, 4t-1], 4t)
-e5 = (4t, [4t+1, 5t-1], 5t)
-e6 = (5t, [5t+1, 6t-1], 3t)     // 6t is null
-e7 = (0, [6t+1, 7t-1], 7t)
-e8 = (7t, [7t+1, 8t-1], 8t)
-e9 = (8t, [8t+1, 9t-1], 3t)     // 9t is null
-e10 = (0, [9t+1, 10t-1], 10t)
+e1 =  (0,   [   1,   1t-1], 1t)
+e2 =  (1t,  [1t+1,   2t-1], 2t)
+e3 =  (2t,  [2t+1,   3t-1], 3t)
+e4 =  (0,   [3t+1,   4t-1], 4t)
+e5 =  (4t,  [4t+1,   5t-1], 5t)
+e6 =  (5t,  [5t+1,   6t-1], 3t)   // 6t is null
+e7 =  (0,   [6t+1,   7t-1], 7t)
+e8 =  (7t,  [7t+1,   8t-1], 8t)
+e9 =  (8t,  [8t+1,   9t-1], 3t)   // 9t is null
+e10 = (0,   [9t+1,  10t-1], 10t)
 e11 = (10t, [10t+1, 11t-1], 11t)
-e12 = (11t, [11t+1, 12t-1], 3t) // 12t is null
-e13 = (0, [12t+1, 13t-1], 13t)
+e12 = (11t, [11t+1, 12t-1], 3t)   // 12t is null
+e13 = (0,   [12t+1, 13t-1], 13t)
 e14 = (13t, [13t+1, 14t-1], 14t)
-e15 = (14t, [14t+1, 15t-1], 3t) // 15t is null
-e16 = (1t, [15t+1, 16t-1], 14t) // 16t is null
-e17 = (4t, [16t+1, 17t-1], 2t)  // 17t is null
-e18 = (7t, [17t+1, 18t-1], 5t)  // 18t is null
-e19 = (10t, [18t+1, 19t-1], 8t) // 19t is null
-e20 = (13t, [19t+1, 20t-1], 11t) // 20t starts the addressing of the face vertices.
+e15 = (14t, [14t+1, 15t-1], 3t)   // 15t is null
+e16 = (1t,  [15t+1, 16t-1], 14t)  // 16t is null
+e17 = (4t,  [16t+1, 17t-1], 2t)   // 17t is null
+e18 = (7t,  [17t+1, 18t-1], 5t)   // 18t is null
+e19 = (10t, [18t+1, 19t-1], 8t)   // 19t is null
+e20 = (13t, [19t+1, 20t-1], 11t)  // 20t starts the addressing of the face vertices.
 
 Face Vertex Addressing:
-f0 = [20t, (t-1)^2 + 20t - 2]
-     // the minus 2 at the end is because we're not counting the primary edge rows or columns. 
-     // A 9x9 grid of vertices would then be calculated as 7x7 since we're not counting the perimeter 
-     // vertices since they've already been calculated as the initial edges.
-
-Note: the -2 is throwing me for a loop. Am I skipping any slots in the array?
-
-f1 = [ (t-1)^2 + 20t, 2(t-1)^2 + 20t - 2 ]
-f2 = [2(t-1)^2 + 20t, 3(t-1)^2 + 20t - 2 ]
-f3 = [3(t-1)^2 + 20t, 4(t-1)^2 + 20t - 2 ]
-f4 = [4(t-1)^2 + 20t, 5(t-1)^2 + 20t - 2 ]
-f5 = [5(t-1)^2 + 20t, 6(t-1)^2 + 20t - 2 ]
-f6 = [6(t-1)^2 + 20t, 7(t-1)^2 + 20t - 2 ]
-f7 = [7(t-1)^2 + 20t, 8(t-1)^2 + 20t - 2 ]
-f8 = [8(t-1)^2 + 20t, 9(t-1)^2 + 20t - 2 ]
-f9 = [9(t-1)^2 + 20t, 10(t-1)^2 + 20t - 2]
-
+f0 = [            20t,   (t-1)^2 + 20t - 1 ]
+f1 = [  (t-1)^2 + 20t,  2(t-1)^2 + 20t - 1 ]
+f2 = [ 2(t-1)^2 + 20t,  3(t-1)^2 + 20t - 1 ]
+f3 = [ 3(t-1)^2 + 20t,  4(t-1)^2 + 20t - 1 ]
+f4 = [ 4(t-1)^2 + 20t,  5(t-1)^2 + 20t - 1 ]
+f5 = [ 5(t-1)^2 + 20t,  6(t-1)^2 + 20t - 1 ]
+f6 = [ 6(t-1)^2 + 20t,  7(t-1)^2 + 20t - 1 ]
+f7 = [ 7(t-1)^2 + 20t,  8(t-1)^2 + 20t - 1 ]
+f8 = [ 8(t-1)^2 + 20t,  9(t-1)^2 + 20t - 1 ]
+f9 = [ 9(t-1)^2 + 20t, 10(t-1)^2 + 20t - 1 ]
 
 number of vertices inside of a face that DON'T make up an edge; 
 (t-1)^2 where t = tesselation or the number of edges a primary edge is divided into.
@@ -103,7 +96,9 @@ The first row & column is already 0 so it doesn't get counted, minus 1 to not co
 Size of the vertex array:
 10 faces + 20 edges + 12 points + 8 null points
 (t-1)^2 * 10 + (t-1) * 20 + 12 + 8 (THIS IS A QUADRATIC EQUATION!)
-Simplifies to 10 * t^2 + 10 (fuck yeah!)
+Simplifies to 10 * t^2 + 10 (fuck yeah!) 
+Note: address [0] counts as 1 which is why the last address used on f10 is 1 less than the calculation for the size of the vertex array.
+10(t-1)^2 + 20t = 10*t^2 + 10
 
 Size of the face array:
 10 faces
@@ -162,3 +157,15 @@ Addressing of faces would then be done when applying the haversign formulas.
   - store in [18t+1, 19t-1]
 20. subdivide e20, [13t] & [11t]
   - store in [19t+1, 20t-1]
+
+// Faces
+// Face 0
+// The first line is a primary line and thus is already subdivided.
+// Face loops to be tracked.
+21. subdivide 2nd line of F0
+  - Using e1 & e17 as start and end points
+  - subdivide [x], [y]
+     - loop start: x=1, y=16t+1
+     - increment by +1 each loop until x = t1 (do not run on x = t1) // verify
+- store in [20t+a, 20t+t-1+b]
+  - loop start: a=0, b=0
