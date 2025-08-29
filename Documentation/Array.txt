@@ -75,16 +75,16 @@ e19 = (10t, [18t+1, 19t-1], 8t)   // 19t is null
 e20 = (13t, [19t+1, 20t-1], 11t)  // 20t starts the addressing of the face vertices.
 
 Face Vertex Addressing:
-f0 = [            20t,   (t-1)^2 + 20t - 1 ]
-f1 = [  (t-1)^2 + 20t,  2(t-1)^2 + 20t - 1 ]
-f2 = [ 2(t-1)^2 + 20t,  3(t-1)^2 + 20t - 1 ]
-f3 = [ 3(t-1)^2 + 20t,  4(t-1)^2 + 20t - 1 ]
-f4 = [ 4(t-1)^2 + 20t,  5(t-1)^2 + 20t - 1 ]
-f5 = [ 5(t-1)^2 + 20t,  6(t-1)^2 + 20t - 1 ]
-f6 = [ 6(t-1)^2 + 20t,  7(t-1)^2 + 20t - 1 ]
-f7 = [ 7(t-1)^2 + 20t,  8(t-1)^2 + 20t - 1 ]
-f8 = [ 8(t-1)^2 + 20t,  9(t-1)^2 + 20t - 1 ]
-f9 = [ 9(t-1)^2 + 20t, 10(t-1)^2 + 20t - 1 ]
+f0 = [            20t,   (t-1)^2 + 20t - 1 ] ; 20t, t^2+18t
+f1 = [  (t-1)^2 + 20t,  2(t-1)^2 + 20t - 1 ] ; t^2+18t+1, 
+f2 = [ 2(t-1)^2 + 20t,  3(t-1)^2 + 20t - 1 ] ; 2t^2+16t+2, 
+f3 = [ 3(t-1)^2 + 20t,  4(t-1)^2 + 20t - 1 ] ; 3t^2+14t+3,
+f4 = [ 4(t-1)^2 + 20t,  5(t-1)^2 + 20t - 1 ] ; 4t^2+12t+4,
+f5 = [ 5(t-1)^2 + 20t,  6(t-1)^2 + 20t - 1 ] ; 5t^2+10t+5,
+f6 = [ 6(t-1)^2 + 20t,  7(t-1)^2 + 20t - 1 ] ; 6t^2+8t+6,
+f7 = [ 7(t-1)^2 + 20t,  8(t-1)^2 + 20t - 1 ] ; 7t^2+6t+7,
+f8 = [ 8(t-1)^2 + 20t,  9(t-1)^2 + 20t - 1 ] ; 8t^2+4t+8,
+f9 = [ 9(t-1)^2 + 20t, 10(t-1)^2 + 20t - 1 ] ; 9t^2+2t+9,
 
 number of vertices inside of a face that DON'T make up an edge; 
 (t-1)^2 where t = tesselation or the number of edges a primary edge is divided into.
@@ -163,9 +163,19 @@ Addressing of faces would then be done when applying the haversign formulas.
 // The first line is a primary line and thus is already subdivided.
 // Face loops to be tracked.
 21. subdivide 2nd line of F0
-  - Using e1 & e17 as start and end points
+  - Using e1 & e17 as start and end points with the Northern-most point and the Eastern-most point to sub-divide the North-Eastern line and working the lines in order towards the South-Western line. Each line is worked from North to East.
   - subdivide [x], [y]
-     - loop start: x=1, y=16t+1
+     - loop start: x=1, y=16t+1; this is the array address for the start and end points.
      - increment by +1 each loop until x = t1 (do not run on x = t1) // verify
-- store in [20t+a, 20t+t-1+b]
-  - loop start: a=0, b=0
+     - each loop represents an entire line having been sub-divided.
+- store in [(c+b)t+a, (c+1)t-1]
+  - the first internal point of each line will have an array address that is a factor of "t"
+  - loop start: a=0, b=0, c=20 
+    - "a" modifies the array address for each point along the line being subdivided.
+    - "b" modifies the array address for the first point on each line. When this increments +1, "a" needs to reset to 0.
+    - "c" is the global variable and will be used to track array usage between faces.
+  - increment a by +1 each loop until a=t but does not run if a=t as that would be a point along a primary edge.
+    - for Haversign purposes, each of these lines are spherically parallel to the icosahedron central angle, acos(sqrt(5)/5). Need to verify. This might simplify the math.
+  - if a=t, then ++b and a=0
+  - if b=t, then end loop and set c=  // verify math for c
+  - start next face.
