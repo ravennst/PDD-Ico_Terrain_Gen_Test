@@ -119,9 +119,9 @@ Addressing of faces would then be done when applying the haversign formulas.
 1. Subdivide e1, [0] & [1t]
   - store in [1, 1t-1]
 2. Subdivide e2, [1t] & [2t]
+  - store in [2t+1, 3t-1]
   - store in [1t+1, 2t-1]
 3. Subdivide e3, [2t] & [3t]
-  - store in [2t+1, 3t-1]
 4. Subdivide e4, [0] & [4t]
   - store in [3t+1, 4t-1]
 5. subdivide e5, [4t] & [5t]
@@ -157,6 +157,12 @@ Addressing of faces would then be done when applying the haversign formulas.
   - store in [18t+1, 19t-1]
 20. subdivide e20, [13t] & [11t]
   - store in [19t+1, 20t-1]
+
+l0 - primary edge
+l1 - [20t,20t+t-2], [20t, 21t-2]
+l2 - [20t+t-1, 20t+2t-1-2]; [21t-1, 22t-3]
+l3 - [22t-2, 22t+t-2-2]; [22t-2, 23t-4]
+ln - [20t+t(n-1)-(n-1), (20t+tn-(n+1)]
 
 // Faces
 // Face 0
