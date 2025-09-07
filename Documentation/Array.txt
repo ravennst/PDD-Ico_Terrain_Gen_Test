@@ -4,26 +4,26 @@
 t = tesselation level (equals to the number of sides an edge is being divided into)
 
 
-     0         0         0         0         0
-     /\        /\        /\        /\        /\
-    /  \      /  \      /  \      /  \      /  \
-  e13   e1   e1   e4   e4   e7   e7  e10  e10  e13
-  /      \  /      \  /      \  /      \  /      \
- /        \/        \/        \/        \/        \
-t13  f9   t1   f1   t4   f3   t7   f5   t10  f7   t13      
- \        /\        /\        /\        /\        /\
-  \      /  \      /  \      /  \      /  \      /  \
-  e14  e16   e2  e17   e5  e18   e8  e19  e11  e20  e14
-    \  /      \  /      \  /      \  /      \  /      \
-     \/        \/        \/        \/        \/        \
-     t14  f10  t2   f2   t5   f4   t8   f6   t11  f8   t14
-      \        /\        /\        /\        /\        /
-       \      /  \      /  \      /  \      /  \      /
-       e15   e3   e3   e6   e6   e9   e9  e12  e12  e15
-         \  /      \  /      \  /      \  /      \  /
-          \/        \/        \/        \/        \/
-         (t3)       t3       (t3)      (t3)      (t3)     
-          t15                 t6        t9        t12
+      0         0         0         0         0
+      /\        /\        /\        /\        /\
+     /  \      /  \      /  \      /  \      /  \
+   e13   e1   e1   e4   e4   e7   e7  e10  e10  e13
+   /      \  /      \  /      \  /      \  /      \
+  /        \/        \/        \/        \/        \
+t13   f8   t1   f0   4t   f2   7t   f4  10t   f6   13t      
+  \        /\        /\        /\        /\        /\
+   \      /  \      /  \      /  \      /  \      /  \
+   e14  e16   e2  e17   e5  e18   e8  e19  e11  e20  e14
+     \  /      \  /      \  /      \  /      \  /      \
+      \/        \/        \/        \/        \/        \
+      14t  f9   2t   f1   5t   f3   8t   f5   11t  f7   14t
+       \        /\        /\        /\        /\        /
+        \      /  \      /  \      /  \      /  \      /
+        e15   e3   e3   e6   e6   e9   e9  e12  e12  e15
+          \  /      \  /      \  /      \  /      \  /
+           \/        \/        \/        \/        \/
+          (3t)       3t       (3t)      (3t)      (3t)     
+           15t                 6t        9t        12t
 
 [0]	    	- Point 1; North Pole; lat(pi/2),long(0)
 
@@ -168,6 +168,11 @@ ln - [20t+t(n-1)-(n-1), (20t+tn-(n+1)]
 // Face 0
 // The first line is a primary line and thus is already subdivided.
 // Face loops to be tracked.
+// Unrelated note: I could treat the North and South panels of the quadded icosahedron as a single panel for subdivision. This would have the benefit of making less faces to keep track of border vertices of but I'm going to use the current 10 faces as I can generate the hight for a single face to test the terrain generator.
+// Loops: There are a few nested loops to consider and track.
+     - Loop 1: What face am I on?
+     - Loop 2: Which row on the face am I on?
+     - Loop 3: Which vertex along that row am I calculating?
 21. subdivide 2nd line of F0
   - Using e1 & e17 as start and end points with the Northern-most point and the Eastern-most point to sub-divide the North-Eastern line and working the lines in order towards the South-Western line. Each line is worked from North to East.
   - subdivide [x], [y]
@@ -185,3 +190,17 @@ ln - [20t+t(n-1)-(n-1), (20t+tn-(n+1)]
   - if a=t, then ++b and a=0
   - if b=t, then end loop and set c=  // verify math for c
   - start next face.
+
+21. Face 0, Line 1
+     // At this point, all the primary vertices and edges have been calculated.
+     - set counters: f_track = 0, l_track = 1, v_track = 1
+     // f_track: tracks face
+     // l_track: tracks line
+     // v_track: tracks vertex
+     - Loop 1: 1st verticies of e1 & e17 not a primary edge. 
+          vArray[1] = a & vArray[16t+1] = b // These are on e1 & e17
+     - Calculate first point:
+          haversign formula: have_Divide(a,b)
+                    output: c; lat/long of midpoint.
+************* NEED TO DETERMINE PROPER HAVERSIGN. I have the start and endpoint but I would like to calculate a point along the arc expressed as a % of the total distance between the two points. The first point would be Vc = D * (1/(t*l_track))
+Need to verify.
