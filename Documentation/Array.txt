@@ -200,7 +200,26 @@ ln - [20t+t(n-1)-(n-1), (20t+tn-(n+1)]
      - Loop 1: 1st verticies of e1 & e17 not a primary edge. 
           vArray[1] = a & vArray[16t+1] = b // These are on e1 & e17
      - Calculate first point:
-          haversign formula: have_Divide(a,b)
-                    output: c; lat/long of midpoint.
-************* NEED TO DETERMINE PROPER HAVERSIGN. I have the start and endpoint but I would like to calculate a point along the arc expressed as a % of the total distance between the two points. The first point would be Vc = D * (1/(t*l_track))
-Need to verify.
+          haversign formula: have_Divide(a,b,c)
+                  Input: a = lat/long point 1, 
+                         b = lat/long point 2, 
+                         c = fractional value between 0 & 1 of the location of the vertex being calculated along the curve.
+                 output: d = lat/long of point being calculated.
+************* PROPER HAVERSINE FORMULA
+Intermediate point
+An intermediate point at any fraction along the great circle path between two points can also be calculated.1
+
+Formula:	a = sin((1−f)⋅δ) / sin δ
+b = sin(f⋅δ) / sin δ
+x = a ⋅ cos φ1 ⋅ cos λ1 + b ⋅ cos φ2 ⋅ cos λ2
+y = a ⋅ cos φ1 ⋅ sin λ1 + b ⋅ cos φ2 ⋅ sin λ2
+z = a ⋅ sin φ1 + b ⋅ sin φ2
+φi = atan2(z, √x² + y²)
+λi = atan2(y, x)
+where: f is fraction along great circle route (f=0 is point 1, f=1 is point 2), δ is the angular distance d/R between the two points.
+If f=0 is point 1 and f=1 is point 2 then f=x/t where x = the number of the point along the line being calculated.
+1/t is the 1st point
+2/t is the 2nd point
+x/t until x=t with x=t-1 being the last point being calculated in that row.
+
+
