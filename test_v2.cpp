@@ -30,8 +30,19 @@
  * Edge-interior vertices fill the gaps between primary anchors:
  *   e1:  slots [1,      1t-1]   (between [0]  and [1t])
  *   e2:  slots [1t+1,   2t-1]   (between [1t] and [2t])
- *   ...continuing through all 20 edges
- *   e20: slots [19t+1,  20t-1]  (between [13t] and [11t])
+ *   ...
+ *   e15: slots [14t+1,  15t-1]
+ *   e16: slots [15t+1,  16t-1]  (geometric: 1t -> 14t)
+ *   e17: slots [16t+1,  17t-1]  (geometric: 4t -> 2t)
+ *   e18: slots [17t+1,  18t-1]  (geometric: 7t -> 5t)
+ *   e19: slots [18t+1,  19t-1]  (geometric: 10t -> 8t)
+ *   e20: slots [19t+1,  20t-1]  (geometric: 13t -> 11t)
+ *
+ * Null slots:
+ *   6t, 9t, 12t, 15t  = south pole duplicates (mirror 3t)
+ *   16t, 17t, 18t, 19t = pure padding nulls (no geometric meaning;
+ *                        keep t-offset arithmetic consistent for e16-e20)
+ *   20t = first face interior vertex of f0 (real data, not null)
  *
  * Face-interior vertices start at index 20t:
  *   f0:  slots [20t,               20t + (t-1)^2 - 1]
@@ -127,42 +138,41 @@ int resolve_anchor(int n) {
 }
 
 // ---------------------------------------------------------------------------
-// 20 edges: (start_anchor, end_anchor) as defined in Array.txt
-// Interior slots of edge e run from start_anchor*t+1 to end_anchor*t-1.
-// Null end anchors resolve to anchor 3 (south pole).
+// 20 edges defined in Array.txt.
+//
+// sa        = geometric start anchor (haversine interpolation)
+// ea        = geometric end anchor
+// Slot ranges are 20 sequential t-sized windows: edge e (0-indexed)
+// occupies slots e*t+1 .. e*t+(t-1). The geometric start/end vertices
+// are purely for haversine interpolation and are independent of slot math.
+//
+// Null padding slots: 6t,9t,12t,15t mirror south pole (3t).
+//                     16t,17t,18t,19t are pure padding nulls.
+//                     20t is the first face interior vertex (real data).
 // ---------------------------------------------------------------------------
 struct EdgeDef { int sa, ea; };
 const EdgeDef EDGES[20] = {
-    { 0,  1}, // e1
-    { 1,  2}, // e2
-    { 2,  3}, // e3
-    { 0,  4}, // e4
-    { 4,  5}, // e5
-    { 5,  3}, // e6  (end=6t=null->3t)
-    { 0,  7}, // e7
-    { 7,  8}, // e8
-    { 8,  3}, // e9  (end=9t=null->3t)
-    { 0, 10}, // e10
-    {10, 11}, // e11
-    {11,  3}, // e12 (end=12t=null->3t)
-    { 0, 13}, // e13
-    {13, 14}, // e14
-    {14,  3}, // e15 (end=15t=null->3t)
-    { 1, 14}, // e16 (end=16t=null, but end_anchor=14 here; see below)
-    { 4,  2}, // e17
-    { 7,  5}, // e18
-    {10,  8}, // e19
-    {13, 11}, // e20
+    {0,1}, // e1:  slots 1..1t-1,       interp 0   -> 1t
+    {1,2}, // e2:  slots 1t+1..2t-1,    interp 1t  -> 2t
+    {2,3}, // e3:  slots 2t+1..3t-1,    interp 2t  -> 3t
+    {0,4}, // e4:  slots 3t+1..4t-1,    interp 0   -> 4t
+    {4,5}, // e5:  slots 4t+1..5t-1,    interp 4t  -> 5t
+    {5,3}, // e6:  slots 5t+1..6t-1,    interp 5t  -> 3t
+    {0,7}, // e7:  slots 6t+1..7t-1,    interp 0   -> 7t
+    {7,8}, // e8:  slots 7t+1..8t-1,    interp 7t  -> 8t
+    {8,3}, // e9:  slots 8t+1..9t-1,    interp 8t  -> 3t
+    {0,10}, // e10: slots 9t+1..10t-1,   interp 0   -> 10t
+    {10,11}, // e11: slots 10t+1..11t-1,  interp 10t -> 11t
+    {11,3}, // e12: slots 11t+1..12t-1,  interp 11t -> 3t
+    {0,13}, // e13: slots 12t+1..13t-1,  interp 0   -> 13t
+    {13,14}, // e14: slots 13t+1..14t-1,  interp 13t -> 14t
+    {14,3}, // e15: slots 14t+1..15t-1,  interp 14t -> 3t
+    {1,14}, // e16: slots 15t+1..16t-1,  interp 1t  -> 14t
+    {4,2}, // e17: slots 16t+1..17t-1,  interp 4t  -> 2t
+    {7,5}, // e18: slots 17t+1..18t-1,  interp 7t  -> 5t
+    {10,8}, // e19: slots 18t+1..19t-1,  interp 10t -> 8t
+    {13,11}, // e20: slots 19t+1..20t-1,  interp 13t -> 11t
 };
-// Note: for e16, Array.txt says "store in [15t+1, 16t-1]" with end=14t.
-// 16t is the slot AFTER 15t, so interior points run 15t+1..16t-1.
-// But 16t = end_anchor*t means end_anchor=16... which doesn't exist.
-// The interior slots are start_anchor*t+1 .. (start_anchor+1)*t-1 for the
-// "diagonal" edges (e16-e20) since they span one t-sized block each.
-// We handle e16-e20 slot calculation separately: slot = sa*t + 1 + p.
-// This is the same formula, just sa*t+1+p, which already works since
-// we use start_anchor to compute the base slot.
-
 // ---------------------------------------------------------------------------
 // Face topology: for each face, N/E/S/W corner anchors and NE/ES/SW/WN edges.
 // edge_fwd[i]=true means the face traverses that edge in the same direction
@@ -217,10 +227,11 @@ const FaceDef FACES[10] = {
 int total_vertices(int t) { return 10*t*t + 10; }
 int face_base(int f, int t) { return 20*t + f*(t-1)*(t-1); }
 
-// Slot for the p-th interior point of edge e (0-indexed, p in 0..t-2).
-// p=0 is nearest the start_anchor end.
+// Slot for the p-th interior point of edge e.
+// e is 0-indexed. p is 1-indexed (1..t-1), matching f=p/t from Array.txt.
+// Slot ranges are 20 sequential t-sized windows: edge e occupies e*t+1..e*t+(t-1).
 int edge_slot(int e, int p, int t) {
-    return EDGES[e].sa * t + 1 + p;
+    return e * t + p;
 }
 
 // ---------------------------------------------------------------------------
@@ -292,20 +303,24 @@ int main()
     }
     // Mirror south-pole data into null duplicate slots
     for (int n : {6,9,12,15}) VA[n*t] = VA[3*t];
+    // Mark padding null slots (16t-19t) as computed with zero data
+    // so the computed flag check never fires on them accidentally.
+    for (int n : {16,17,18,19}) VA[n*t].computed = true;
 
     cout << "Primary vertices done.\n";
 
     // ------------------------------------------------------------------
     // Phase 2: Edge-interior vertices
-    // For edge e, slots sa*t+1 .. sa*t+(t-1), fraction f=(p+1)/t
+    // Slots: e*t+p where p=1..t-1, fraction f=p/t
+    // Geometry: interpolate between sa and ea (ea resolved through nulls).
     // ------------------------------------------------------------------
     for (int e = 0; e < 20; e++) {
         int sa = EDGES[e].sa;
         int ea = resolve_anchor(EDGES[e].ea);
         double lat1=PRIMARY[sa].lat, lon1=PRIMARY[sa].lon;
         double lat2=PRIMARY[ea].lat, lon2=PRIMARY[ea].lon;
-        for (int p = 0; p < t-1; p++) {
-            double f = (double)(p+1)/(double)t;
+        for (int p = 1; p < t; p++) {
+            double f = (double)p/(double)t;
             auto [lat,lon] = hav_interp(lat1,lon1,lat2,lon2,f);
             compute_vertex(VA, edge_slot(e,p,t), lat, lon);
         }
@@ -391,13 +406,13 @@ int main()
         // NE edge (row=0, col 1..t-1): p steps from N corner
         if (nn) {
             int e=fd.edge[0]; bool fwd=fd.fwd[0];
-            int p = fwd ? (col-1) : (t-1-col);
+            int p = fwd ? col : (t-col);
             return edge_slot(e,p,t);
         }
         // ES edge (col=t, row 1..t-1)
         if (ee) {
             int e=fd.edge[1]; bool fwd=fd.fwd[1];
-            int p = fwd ? (row-1) : (t-1-row);
+            int p = fwd ? row : (t-row);
             return edge_slot(e,p,t);
         }
         // SW edge (row=t, col t-1..1)
@@ -407,13 +422,13 @@ int main()
             // fwd=false (typical): edge goes end->start = S->W direction in face
             // p counts from edge's start_anchor:
             //   fwd=false means face's col=1 is near start_anchor, col=t-1 near end_anchor
-            int p = fwd ? (t-1-col) : (col-1);
+            int p = fwd ? (t-col) : col;
             return edge_slot(e,p,t);
         }
         // WN edge (col=0, row t-1..1)
         if (ww) {
             int e=fd.edge[3]; bool fwd=fd.fwd[3];
-            int p = fwd ? (row-1) : (t-1-row);
+            int p = fwd ? row : (t-row);
             return edge_slot(e,p,t);
         }
 
