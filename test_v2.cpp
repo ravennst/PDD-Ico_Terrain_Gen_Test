@@ -89,9 +89,9 @@ const double PI         = 3.141592653589793;
 const double RADIUS     = 1.0;
 const double HEIGHT_MOD = 1.0;
 
-int  Tessellation_Level = 7;
-bool triOrQuad          = true;
-int  Calc_Level;
+int  Tessellation_Level = 300;
+bool triOrQuad          = true; // if true, output triangles; if false, output quads (one per face grid cell)
+int  Calc_Level; // internal calc level for planet() calls; set to Tessellation_Level+15 for extra detail
 
 // ---------------------------------------------------------------------------
 // Vertex and face structs
@@ -285,7 +285,7 @@ int main()
 {
     initialize_vertices();
     int t  = Tessellation_Level;
-    Calc_Level = t + 15;
+    Calc_Level = min(t + 15, 30);
 
     int total = total_vertices(t);
     cout << "Tessellation level : " << t          << "\n";
@@ -361,7 +361,7 @@ int main()
             // Fraction along WN/ES edges for this line's boundary endpoints.
             // ln=0 is the line nearest the N corner (p=0 on the edge = f=1/t).
             double f_edge = (double)(ln+1)/(double)t;
-            double wn_f = wn_fwd ? f_edge : (1.0-f_edge);
+            double wn_f = wn_fwd ? (1.0-f_edge) : f_edge;
             double es_f = es_fwd ? f_edge : (1.0-f_edge);
 
             auto [wn_lat,wn_lon] = hav_interp(wn_lat1,wn_lon1,wn_lat2,wn_lon2, wn_f);
@@ -428,7 +428,7 @@ int main()
         // WN edge (col=0, row t-1..1)
         if (ww) {
             int e=fd.edge[3]; bool fwd=fd.fwd[3];
-            int p = fwd ? row : (t-row);
+            int p = fwd ? (t-row) : row;
             return edge_slot(e,p,t);
         }
 
@@ -467,7 +467,7 @@ int main()
         if (fabs(x)<1e-10) x=0.0;
         if (fabs(y)<1e-10) y=0.0;
         if (fabs(z)<1e-10) z=0.0;
-        out << "v " << x << " " << y << " " << -z << "\n";
+        out << "v " << x << " " << -z << " " << -y << "\n";
     }
     out << "\n";
 
