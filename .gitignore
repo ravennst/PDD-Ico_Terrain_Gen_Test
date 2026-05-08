@@ -8,6 +8,7 @@
 *.obj
 *.OBJ
 *.OBJ.txt
+*.blend
 
 
 # Precompiled Headers
